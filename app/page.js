@@ -1,59 +1,10 @@
+```javascript
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
 
 const API_URL =
   "https://script.google.com/macros/s/AKfycbzDG5qtgL4Pzt__QWAByxmrow82P4o88MAUgPsHkc8lemp6gcy7Tel7IzKO_-76PY8U0w/exec";
-
-const icons = {
-  sales: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <path d="M4 19V5" />
-      <path d="M4 19h16" />
-      <path d="m7 15 4-4 3 2 5-6" />
-    </svg>
-  ),
-
-  receivable: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <circle cx="12" cy="12" r="9" />
-      <path d="M15 8.5c-.7-.7-1.7-1-3-1-1.7 0-3 .8-3 2s1.2 2 3 2 3 .8 3 2-1.3 2-3 2c-1.3 0-2.3-.3-3-1" />
-      <path d="M12 6v12" />
-    </svg>
-  ),
-
-  purchase: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h7.8a2 2 0 0 0 2-1.6L21 8H6" />
-      <circle cx="10" cy="20" r="1" />
-      <circle cx="18" cy="20" r="1" />
-    </svg>
-  ),
-
-  inventory: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z" />
-      <path d="m4 7.5 8 4.5 8-4.5" />
-      <path d="M12 12v9" />
-    </svg>
-  ),
-
-  expense: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <path d="M6 3h9l3 3v15H6z" />
-      <path d="M14 3v4h4" />
-      <path d="M9 12h6M9 16h6" />
-    </svg>
-  ),
-
-  chart: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <path d="M4 19V5" />
-      <path d="M4 19h16" />
-      <path d="m7 15 3-3 3 2 5-6" />
-    </svg>
-  ),
-};
 
 function formatMoney(value) {
   if (typeof value !== "number") return "—";
@@ -76,378 +27,258 @@ function formatCompact(value) {
   return "₱" + value.toFixed(0);
 }
 
+function Icon({ type }) {
+  const icons = {
+    sales: (
+      <svg viewBox="0 0 24 24" fill="none">
+        <path d="M4 19V5M4 19H20" stroke="currentColor" strokeWidth="2" />
+        <path
+          d="M7 15L11 11L14 14L20 7"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    ),
+
+    receivable: (
+      <svg viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2" />
+        <path
+          d="M12 7V17M15 9.5C15 8.4 13.9 7.5 12.5 7.5H11.7C10.2 7.5 9 8.5 9 9.7C9 10.9 10 11.6 11.2 11.9L13 12.4C14.2 12.7 15 13.4 15 14.5C15 15.7 13.8 16.5 12.3 16.5H11.5C10.1 16.5 9 15.6 9 14.5"
+          stroke="currentColor"
+          strokeWidth="1.7"
+          strokeLinecap="round"
+        />
+      </svg>
+    ),
+
+    purchase: (
+      <svg viewBox="0 0 24 24" fill="none">
+        <path
+          d="M4 5H6L8.2 15.2C8.4 16.2 9.3 17 10.3 17H17.5C18.5 17 19.4 16.3 19.7 15.3L21 9H7"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <circle cx="10" cy="20" r="1.5" fill="currentColor" />
+        <circle cx="18" cy="20" r="1.5" fill="currentColor" />
+      </svg>
+    ),
+
+    inventory: (
+      <svg viewBox="0 0 24 24" fill="none">
+        <path
+          d="M4 7L12 3L20 7L12 11L4 7Z"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M4 12L12 16L20 12M4 17L12 21L20 17"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinejoin="round"
+        />
+      </svg>
+    ),
+
+    expense: (
+      <svg viewBox="0 0 24 24" fill="none">
+        <path
+          d="M5 4H19V20H5V4Z"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M8 8H16M8 12H16M8 16H13"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+        />
+      </svg>
+    ),
+
+    chart: (
+      <svg viewBox="0 0 24 24" fill="none">
+        <path
+          d="M4 19V5M4 19H20"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+        />
+        <rect x="7" y="12" width="2.8" height="5" rx="1" fill="currentColor" />
+        <rect x="11" y="9" width="2.8" height="8" rx="1" fill="currentColor" />
+        <rect x="15" y="6" width="2.8" height="11" rx="1" fill="currentColor" />
+      </svg>
+    ),
+  };
+
+  return icons[type] || null;
+}
+
+function BarChart({ data, valueKey, labelKey, compact = false }) {
+  if (!data || data.length === 0) {
+    return (
+      <div className="empty-chart">
+        No sales data available.
+      </div>
+    );
+  }
+
+  const maxValue = Math.max(
+    ...data.map((item) => Number(item[valueKey]) || 0),
+    1
+  );
+
+  return (
+    <div className={"bar-chart " + (compact ? "compact-chart" : "")}>
+      <div className="chart-bars">
+        {data.map((item, index) => {
+          const value = Number(item[valueKey]) || 0;
+          const height = Math.max((value / maxValue) * 100, value > 0 ? 4 : 0);
+
+          return (
+            <div className="bar-column" key={index}>
+              <div className="bar-value">
+                {value > 0 ? formatCompact(value) : ""}
+              </div>
+
+              <div className="bar-track">
+                <div
+                  className="bar-fill"
+                  style={{ height: height + "%" }}
+                  title={formatMoney(value)}
+                />
+              </div>
+
+              <div className="bar-label">
+                {item[labelKey]}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 export default function Dashboard() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [lastUpdated, setLastUpdated] = useState(null);
+  const [error, setError] = useState("");
 
-  async function loadData() {
+  async function loadDashboard() {
     try {
       setLoading(true);
+      setError("");
 
-      const response = await fetch(API_URL + "?t=" + Date.now(), {
+      const response = await fetch(API_URL, {
         cache: "no-store",
       });
 
-      const json = await response.json();
+      if (!response.ok) {
+        throw new Error("Unable to load dashboard data.");
+      }
 
+      const json = await response.json();
       setData(json);
-      setLastUpdated(new Date());
-    } catch (error) {
-      console.error("Dashboard API error:", error);
+    } catch (err) {
+      setError(err.message || "Unable to load dashboard data.");
     } finally {
       setLoading(false);
     }
   }
 
   useEffect(() => {
-    loadData();
+    loadDashboard();
   }, []);
 
-  const cards = [
+  const reportDate = useMemo(() => {
+    const today = new Date();
+
+    return today.toLocaleDateString("en-PH", {
+      weekday: "long",
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    });
+  }, []);
+
+  const dailySales = useMemo(() => {
+    return (
+      data?.dailyNetworth?.filter(
+        (item) => Number(item.sales) > 0
+      ) || []
+    );
+  }, [data]);
+
+  const ytdSales = useMemo(() => {
+    return (
+      data?.ytdSales?.map((item) => ({
+        month: item.month,
+        sales: Number(item.sales) || 0,
+      })) || []
+    );
+  }, [data]);
+
+  const kpis = [
     {
-      label: "Today's Sales",
+      title: "Today's Sales",
       value: data?.["Today's Sales"],
-      icon: icons.sales,
-      className: "sales",
+      icon: "sales",
+      className: "sales-card",
     },
     {
-      label: "MTD Sales",
+      title: "MTD Sales",
       value: data?.["MTD Sales"],
-      icon: icons.sales,
-      className: "sales",
+      icon: "sales",
+      className: "sales-card",
     },
     {
-      label: "YTD Sales",
+      title: "YTD Sales",
       value: data?.["YTD Sales"],
-      icon: icons.sales,
-      className: "sales",
+      icon: "sales",
+      className: "sales-card",
     },
     {
-      label: "Accounts Receivable",
+      title: "Accounts Receivable",
       value: data?.["Pending / Unpaid"],
-      icon: icons.receivable,
-      className: "receivable",
+      icon: "receivable",
+      className: "receivable-card",
     },
     {
-      label: "Purchases MTD",
+      title: "Purchases MTD",
       value: data?.["Purchases MTD"],
-      icon: icons.purchase,
-      className: "purchase",
+      icon: "purchase",
+      className: "purchase-card",
     },
     {
-      label: "Goods Inventory",
+      title: "Goods Inventory",
       value: data?.["Goods Inventory"],
-      icon: icons.inventory,
-      className: "inventory",
+      icon: "inventory",
+      className: "inventory-card",
     },
     {
-      label: "Expenses MTD",
+      title: "Expenses MTD",
       value: data?.["Expenses MTD"],
-      icon: icons.expense,
-      className: "expense",
+      icon: "expense",
+      className: "expense-card",
     },
   ];
 
-  const dailyData =
-    data?.dailyNetworth?.filter(
-      (item) => item.sales > 0 || item.inventory > 0
-    ) || [];
-
-  const chart = useMemo(() => {
-    if (!dailyData.length) return null;
-
-    const width = Math.max(950, dailyData.length * 58);
-    const height = 370;
-
-    const padding = {
-      left: 65,
-      right: 25,
-      top: 25,
-      bottom: 55,
-    };
-
-    const chartWidth = width - padding.left - padding.right;
-    const chartHeight = height - padding.top - padding.bottom;
-
-    const maxData = Math.max(
-      ...dailyData.map((item) =>
-        Math.max(item.sales || 0, item.inventory || 0)
-      )
-    );
-
-    const maxValue = Math.ceil(maxData / 100000) * 100000;
-
-    const getX = (index) =>
-      padding.left +
-      (index / Math.max(dailyData.length - 1, 1)) * chartWidth;
-
-    const getY = (value) =>
-      padding.top +
-      chartHeight -
-      ((value || 0) / maxValue) * chartHeight;
-
-    const salesPoints = dailyData
-      .map((item, index) => getX(index) + "," + getY(item.sales))
-      .join(" ");
-
-    const inventoryPoints = dailyData
-      .map((item, index) => getX(index) + "," + getY(item.inventory))
-      .join(" ");
-
-    return {
-      width,
-      height,
-      padding,
-      chartWidth,
-      chartHeight,
-      maxValue,
-      getX,
-      getY,
-      salesPoints,
-      inventoryPoints,
-    };
-  }, [dailyData]);
-
   return (
     <main className="dashboard">
-      <div className="backgroundGlow glowOne" />
-      <div className="backgroundGlow glowTwo" />
-
-      <header className="header">
-        <div>
-          <div className="brand">PTANZO ALBAY</div>
-          <h1>Sales &amp; Operations Dashboard</h1>
-          <p>Business performance overview</p>
-        </div>
-
-        <div className="headerRight">
-          <div className="date">
-            {new Date().toLocaleDateString("en-US", {
-              weekday: "long",
-              month: "long",
-              day: "numeric",
-              year: "numeric",
-            })}
-          </div>
-
-          <button className="refreshButton" onClick={loadData}>
-            <span className={loading ? "spin" : ""}>↻</span>
-            Refresh
-          </button>
-        </div>
-      </header>
-
-      <section className="kpiGrid">
-        {cards.map((card) => (
-          <div
-            key={card.label}
-            className={"kpiCard " + card.className}
-          >
-            <div className="cardGlow" />
-
-            <div className="iconBox">
-              {card.icon}
-            </div>
-
-            <div className="kpiContent">
-              <div className="kpiLabel">{card.label}</div>
-
-              <div className="kpiValue">
-                {loading ? "Loading..." : formatMoney(card.value)}
-              </div>
-            </div>
-          </div>
-        ))}
-      </section>
-
-      <section className="chartCard">
-        <div className="chartHeader">
-          <div className="chartTitleArea">
-            <div className="chartIcon">
-              {icons.chart}
-            </div>
-
-            <div>
-              <h2>Daily Sales &amp; Goods Inventory</h2>
-              <p>Historical daily movement from Daily Networth</p>
-            </div>
-          </div>
-
-          <div className="periodBadge">
-            September 2026
-          </div>
-        </div>
-
-        <div className="legend">
-          <div>
-            <span className="legendDot salesDot" />
-            Daily Sales
-          </div>
-
-          <div>
-            <span className="legendDot inventoryDot" />
-            Goods Inventory
-          </div>
-        </div>
-
-        <div className="chartScroll">
-          {chart ? (
-            <svg
-              width={chart.width}
-              height={chart.height}
-              className="chart"
-              viewBox={
-                "0 0 " +
-                chart.width +
-                " " +
-                chart.height
-              }
-            >
-              {[0, 1, 2, 3, 4, 5].map((level) => {
-                const value =
-                  chart.maxValue -
-                  (chart.maxValue / 5) * level;
-
-                const y = chart.getY(value);
-
-                return (
-                  <g key={level}>
-                    <line
-                      x1={chart.padding.left}
-                      x2={chart.width - chart.padding.right}
-                      y1={y}
-                      y2={y}
-                      className="gridLine"
-                    />
-
-                    <text
-                      x={chart.padding.left - 10}
-                      y={y + 4}
-                      textAnchor="end"
-                      className="axisText"
-                    >
-                      {formatCompact(value)}
-                    </text>
-                  </g>
-                );
-              })}
-
-              <polyline
-                points={chart.inventoryPoints}
-                className="inventoryLine"
-              />
-
-              <polyline
-                points={chart.salesPoints}
-                className="salesLine"
-              />
-
-              {dailyData.map((item, index) => {
-                const x = chart.getX(index);
-                const salesY = chart.getY(item.sales);
-                const inventoryY = chart.getY(item.inventory);
-
-                const date = new Date(
-                  item.date + "T00:00:00"
-                );
-
-                const label = date.toLocaleDateString(
-                  "en-US",
-                  {
-                    month: "short",
-                    day: "numeric",
-                  }
-                );
-
-                return (
-                  <g key={item.date}>
-                    <circle
-                      cx={x}
-                      cy={salesY}
-                      r="5"
-                      className="salesPoint"
-                    >
-                      <title>
-                        {label} — Sales:{" "}
-                        {formatMoney(item.sales)}
-                      </title>
-                    </circle>
-
-                    <circle
-                      cx={x}
-                      cy={inventoryY}
-                      r="5"
-                      className="inventoryPoint"
-                    >
-                      <title>
-                        {label} — Inventory:{" "}
-                        {formatMoney(item.inventory)}
-                      </title>
-                    </circle>
-
-                    <text
-                      x={x}
-                      y={chart.height - 20}
-                      textAnchor="middle"
-                      className="dateText"
-                    >
-                      {label}
-                    </text>
-                  </g>
-                );
-              })}
-            </svg>
-          ) : (
-            <div className="emptyChart">
-              No daily data available.
-            </div>
-          )}
-        </div>
-
-        <div className="chartNote">
-          Hover over a point to view the exact amount.
-        </div>
-      </section>
-
-      {lastUpdated && (
-        <div className="lastUpdated">
-          Last updated{" "}
-          {lastUpdated.toLocaleTimeString("en-PH", {
-            hour: "numeric",
-            minute: "2-digit",
-            second: "2-digit",
-          })}
-        </div>
-      )}
-
-      <style jsx>{`
+      <style jsx global>{`
         * {
           box-sizing: border-box;
         }
 
         body {
           margin: 0;
-        }
-
-        .dashboard {
-          min-height: 100vh;
-          padding: 34px 42px 45px;
-          position: relative;
-          overflow: hidden;
-          background:
-            radial-gradient(
-              circle at 10% 0%,
-              rgba(59, 130, 246, 0.08),
-              transparent 30%
-            ),
-            radial-gradient(
-              circle at 90% 10%,
-              rgba(16, 185, 129, 0.07),
-              transparent 28%
-            ),
-            #f7f9fc;
-          color: #172033;
           font-family:
             Inter,
             ui-sans-serif,
@@ -456,483 +287,507 @@ export default function Dashboard() {
             BlinkMacSystemFont,
             "Segoe UI",
             sans-serif;
+          background: #f4f7fb;
+          color: #172033;
         }
 
-        .backgroundGlow {
-          position: absolute;
-          border-radius: 50%;
-          filter: blur(60px);
-          pointer-events: none;
+        .dashboard {
+          min-height: 100vh;
+          padding: 30px;
+          background:
+            radial-gradient(
+              circle at top right,
+              rgba(37, 99, 235, 0.08),
+              transparent 32%
+            ),
+            #f4f7fb;
         }
 
-        .glowOne {
-          width: 260px;
-          height: 260px;
-          background: rgba(37, 99, 235, 0.06);
-          top: 250px;
-          left: -100px;
-        }
-
-        .glowTwo {
-          width: 280px;
-          height: 280px;
-          background: rgba(16, 185, 129, 0.05);
-          right: -120px;
-          bottom: 100px;
+        .container {
+          max-width: 1500px;
+          margin: 0 auto;
         }
 
         .header {
-          position: relative;
-          z-index: 1;
           display: flex;
-          align-items: flex-end;
           justify-content: space-between;
-          gap: 30px;
-          margin-bottom: 30px;
+          align-items: center;
+          gap: 25px;
+          margin-bottom: 28px;
         }
 
         .brand {
-          display: inline-block;
-          margin-bottom: 8px;
+          display: flex;
+          align-items: center;
+          gap: 15px;
+        }
+
+        .brand-icon {
+          width: 54px;
+          height: 54px;
+          border-radius: 16px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: linear-gradient(135deg, #172033, #34425c);
+          color: white;
+          box-shadow: 0 10px 25px rgba(23, 32, 51, 0.18);
+        }
+
+        .brand-icon svg {
+          width: 28px;
+          height: 28px;
+        }
+
+        .brand-title {
+          font-size: 27px;
+          font-weight: 800;
+          letter-spacing: -0.6px;
+        }
+
+        .brand-subtitle {
+          margin-top: 3px;
+          font-size: 13px;
+          color: #718096;
+          font-weight: 500;
+        }
+
+        .report-date {
+          text-align: right;
+          padding: 15px 22px;
+          border-radius: 18px;
+          background: white;
+          border: 1px solid #e4eaf2;
+          box-shadow: 0 8px 25px rgba(35, 50, 75, 0.07);
+        }
+
+        .report-date-label {
           font-size: 12px;
           font-weight: 800;
-          letter-spacing: 2px;
-          color: #2563eb;
+          letter-spacing: 1.5px;
+          color: #7b8799;
+          text-transform: uppercase;
+          margin-bottom: 4px;
         }
 
-        h1 {
-          margin: 0;
-          font-size: clamp(27px, 3vw, 40px);
-          line-height: 1.1;
-          letter-spacing: -1.2px;
-          color: #111827;
+        .report-date-value {
+          font-size: 22px;
+          line-height: 1.2;
+          font-weight: 850;
+          color: #172033;
         }
 
-        .header p {
-          margin: 8px 0 0;
-          color: #667085;
-          font-size: 14px;
-        }
-
-        .headerRight {
-          display: flex;
-          align-items: center;
-          gap: 14px;
-        }
-
-        .date {
-          color: #667085;
-          font-size: 13px;
-          white-space: nowrap;
-        }
-
-        .refreshButton {
-          border: 1px solid #dfe5ee;
-          background: rgba(255, 255, 255, 0.9);
-          color: #344054;
-          border-radius: 11px;
-          padding: 10px 15px;
-          font-size: 13px;
-          font-weight: 700;
-          cursor: pointer;
-          display: flex;
-          align-items: center;
-          gap: 7px;
-          transition: 0.2s ease;
-        }
-
-        .refreshButton:hover {
-          transform: translateY(-2px);
-          border-color: #b9c7dc;
-          box-shadow: 0 8px 22px rgba(16, 24, 40, 0.08);
-        }
-
-        .refreshButton span {
-          font-size: 17px;
-        }
-
-        .spin {
-          animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin {
-          to {
-            transform: rotate(360deg);
-          }
-        }
-
-        .kpiGrid {
-          position: relative;
-          z-index: 1;
+        .kpi-grid {
           display: grid;
-          grid-template-columns: repeat(4, minmax(0, 1fr));
+          grid-template-columns: repeat(4, 1fr);
           gap: 17px;
-          margin-bottom: 22px;
+          margin-bottom: 24px;
         }
 
-        .kpiCard {
+        .kpi-card {
           position: relative;
           overflow: hidden;
           min-height: 145px;
           padding: 21px;
-          border: 1px solid #e6eaf0;
-          border-radius: 17px;
-          background: rgba(255, 255, 255, 0.94);
-          box-shadow: 0 8px 25px rgba(16, 24, 40, 0.055);
-          display: flex;
-          gap: 15px;
-          align-items: flex-start;
+          border-radius: 20px;
+          background: white;
+          border: 1px solid #e6ebf2;
+          box-shadow: 0 8px 24px rgba(35, 50, 75, 0.06);
           transition:
             transform 0.2s ease,
             box-shadow 0.2s ease;
         }
 
-        .kpiCard:hover {
-          transform: translateY(-4px);
-          box-shadow: 0 15px 35px rgba(16, 24, 40, 0.1);
+        .kpi-card:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 14px 32px rgba(35, 50, 75, 0.1);
         }
 
-        .kpiCard::before {
+        .kpi-card::after {
           content: "";
-          position: absolute;
-          left: 0;
-          top: 0;
-          bottom: 0;
-          width: 4px;
-          border-radius: 17px 0 0 17px;
-        }
-
-        .kpiCard.sales::before {
-          background: #2563eb;
-        }
-
-        .kpiCard.receivable::before {
-          background: #d97706;
-        }
-
-        .kpiCard.purchase::before {
-          background: #7c3aed;
-        }
-
-        .kpiCard.inventory::before {
-          background: #059669;
-        }
-
-        .kpiCard.expense::before {
-          background: #dc2626;
-        }
-
-        .cardGlow {
           position: absolute;
           width: 110px;
           height: 110px;
+          right: -35px;
+          bottom: -45px;
           border-radius: 50%;
-          right: -45px;
-          top: -45px;
-          opacity: 0.5;
-          filter: blur(8px);
+          background: rgba(37, 99, 235, 0.06);
         }
 
-        .sales .cardGlow {
-          background: rgba(37, 99, 235, 0.1);
-        }
-
-        .receivable .cardGlow {
-          background: rgba(217, 119, 6, 0.1);
-        }
-
-        .purchase .cardGlow {
-          background: rgba(124, 58, 237, 0.1);
-        }
-
-        .inventory .cardGlow {
-          background: rgba(5, 150, 105, 0.1);
-        }
-
-        .expense .cardGlow {
-          background: rgba(220, 38, 38, 0.1);
-        }
-
-        .iconBox {
-          width: 46px;
-          height: 46px;
-          flex: 0 0 46px;
-          border-radius: 13px;
+        .kpi-top {
           display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .iconBox svg {
-          width: 24px;
-          height: 24px;
-        }
-
-        .sales .iconBox {
-          color: #2563eb;
-          background: #eff6ff;
-        }
-
-        .receivable .iconBox {
-          color: #d97706;
-          background: #fffbeb;
-        }
-
-        .purchase .iconBox {
-          color: #7c3aed;
-          background: #f5f3ff;
-        }
-
-        .inventory .iconBox {
-          color: #059669;
-          background: #ecfdf5;
-        }
-
-        .expense .iconBox {
-          color: #dc2626;
-          background: #fef2f2;
-        }
-
-        .kpiContent {
-          position: relative;
-          z-index: 1;
-          min-width: 0;
-        }
-
-        .kpiLabel {
-          margin-top: 3px;
-          color: #667085;
-          font-size: 12px;
-          font-weight: 700;
-          letter-spacing: 0.2px;
-        }
-
-        .kpiValue {
-          margin-top: 9px;
-          color: #101828;
-          font-size: clamp(21px, 2vw, 29px);
-          line-height: 1.1;
-          font-weight: 800;
-          letter-spacing: -0.7px;
-          white-space: nowrap;
-        }
-
-        .chartCard {
-          position: relative;
-          z-index: 1;
-          overflow: hidden;
-          border: 1px solid #e6eaf0;
-          border-radius: 19px;
-          background: rgba(255, 255, 255, 0.96);
-          box-shadow: 0 8px 25px rgba(16, 24, 40, 0.055);
-          padding: 24px 25px 18px;
-        }
-
-        .chartHeader {
-          display: flex;
-          align-items: center;
           justify-content: space-between;
-          gap: 20px;
-        }
-
-        .chartTitleArea {
-          display: flex;
           align-items: center;
-          gap: 13px;
         }
 
-        .chartIcon {
-          width: 42px;
-          height: 42px;
+        .kpi-title {
+          font-size: 13px;
+          color: #718096;
+          font-weight: 700;
+        }
+
+        .kpi-icon {
+          width: 39px;
+          height: 39px;
           border-radius: 12px;
           display: flex;
           align-items: center;
           justify-content: center;
-          background: #eef4ff;
+        }
+
+        .kpi-icon svg {
+          width: 21px;
+          height: 21px;
+        }
+
+        .sales-card .kpi-icon {
+          background: #eaf2ff;
           color: #2563eb;
         }
 
-        .chartIcon svg {
+        .receivable-card .kpi-icon {
+          background: #fff5e6;
+          color: #d97706;
+        }
+
+        .purchase-card .kpi-icon {
+          background: #eeeafe;
+          color: #6d4aff;
+        }
+
+        .inventory-card .kpi-icon {
+          background: #e8f8f0;
+          color: #15905b;
+        }
+
+        .expense-card .kpi-icon {
+          background: #ffecef;
+          color: #dc3f68;
+        }
+
+        .kpi-value {
+          margin-top: 19px;
+          font-size: 26px;
+          font-weight: 850;
+          letter-spacing: -0.6px;
+          color: #172033;
+        }
+
+        .chart-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 20px;
+        }
+
+        .chart-card {
+          background: white;
+          border: 1px solid #e6ebf2;
+          border-radius: 22px;
+          padding: 23px;
+          box-shadow: 0 8px 24px rgba(35, 50, 75, 0.06);
+          min-width: 0;
+        }
+
+        .chart-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 20px;
+        }
+
+        .chart-title-wrap {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+        }
+
+        .chart-icon {
+          width: 40px;
+          height: 40px;
+          border-radius: 12px;
+          background: #eef4ff;
+          color: #2563eb;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .chart-icon svg {
           width: 22px;
           height: 22px;
         }
 
-        .chartTitleArea h2 {
-          margin: 0;
-          font-size: 18px;
-          color: #101828;
-          letter-spacing: -0.3px;
+        .chart-title {
+          font-size: 17px;
+          font-weight: 800;
         }
 
-        .chartTitleArea p {
-          margin: 4px 0 0;
-          color: #667085;
+        .chart-subtitle {
+          margin-top: 2px;
           font-size: 12px;
+          color: #8994a5;
         }
 
-        .periodBadge {
-          padding: 8px 12px;
-          border: 1px solid #e3e8ef;
-          border-radius: 9px;
-          color: #475467;
-          background: #f8fafc;
-          font-size: 12px;
-          font-weight: 700;
-          white-space: nowrap;
-        }
-
-        .legend {
-          display: flex;
-          gap: 20px;
-          margin: 22px 0 3px 55px;
-          color: #667085;
-          font-size: 12px;
-          font-weight: 600;
-        }
-
-        .legend > div {
-          display: flex;
-          align-items: center;
-          gap: 7px;
-        }
-
-        .legendDot {
-          width: 9px;
-          height: 9px;
-          border-radius: 50%;
-        }
-
-        .salesDot {
-          background: #2563eb;
-        }
-
-        .inventoryDot {
-          background: #059669;
-        }
-
-        .chartScroll {
-          width: 100%;
+        .chart-area {
+          height: 360px;
           overflow-x: auto;
           overflow-y: hidden;
-          padding-bottom: 3px;
+          padding-top: 8px;
         }
 
-        .chart {
-          display: block;
-          min-width: 950px;
+        .bar-chart {
+          height: 100%;
+          min-width: 680px;
         }
 
-        .gridLine {
-          stroke: #e9edf3;
-          stroke-width: 1;
+        .compact-chart {
+          min-width: 620px;
         }
 
-        .axisText {
-          fill: #98a2b3;
-          font-size: 10px;
+        .chart-bars {
+          height: 100%;
+          display: flex;
+          align-items: stretch;
+          gap: 10px;
+          padding: 20px 8px 0;
+          border-bottom: 1px solid #e4e9f0;
         }
 
-        .dateText {
-          fill: #98a2b3;
-          font-size: 10px;
+        .bar-column {
+          flex: 1;
+          min-width: 35px;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-end;
+          align-items: center;
         }
 
-        .salesLine {
-          fill: none;
-          stroke: #2563eb;
-          stroke-width: 3;
-          stroke-linecap: round;
-          stroke-linejoin: round;
-        }
-
-        .inventoryLine {
-          fill: none;
-          stroke: #059669;
-          stroke-width: 3;
-          stroke-linecap: round;
-          stroke-linejoin: round;
-        }
-
-        .salesPoint {
-          fill: #ffffff;
-          stroke: #2563eb;
-          stroke-width: 3;
-          cursor: pointer;
-        }
-
-        .inventoryPoint {
-          fill: #ffffff;
-          stroke: #059669;
-          stroke-width: 3;
-          cursor: pointer;
-        }
-
-        .salesPoint:hover,
-        .inventoryPoint:hover {
-          r: 7;
-        }
-
-        .chartNote {
-          margin-top: 5px;
-          color: #98a2b3;
-          font-size: 11px;
-          text-align: right;
-        }
-
-        .emptyChart {
-          height: 370px;
+        .bar-value {
+          height: 30px;
           display: flex;
           align-items: center;
           justify-content: center;
-          color: #98a2b3;
+          font-size: 10px;
+          color: #657187;
+          white-space: nowrap;
+          font-weight: 700;
         }
 
-        .lastUpdated {
-          position: relative;
-          z-index: 1;
-          margin-top: 12px;
-          text-align: right;
-          color: #98a2b3;
-          font-size: 11px;
+        .bar-track {
+          width: 100%;
+          max-width: 44px;
+          height: calc(100% - 62px);
+          display: flex;
+          align-items: flex-end;
+          border-radius: 8px 8px 0 0;
+          background: #f1f4f8;
+          overflow: hidden;
         }
 
-        @media (max-width: 1050px) {
-          .kpiGrid {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
+        .bar-fill {
+          width: 100%;
+          min-height: 0;
+          border-radius: 8px 8px 0 0;
+          background: linear-gradient(180deg, #3b82f6, #2563eb);
+          transition: height 0.4s ease;
+        }
+
+        .bar-label {
+          width: 100%;
+          height: 32px;
+          margin-top: 7px;
+          text-align: center;
+          font-size: 10px;
+          font-weight: 700;
+          color: #68758a;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .empty-chart {
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: #8994a5;
+          font-size: 14px;
+        }
+
+        .status {
+          padding: 25px;
+          background: white;
+          border-radius: 18px;
+          text-align: center;
+          border: 1px solid #e6ebf2;
+        }
+
+        .error {
+          color: #c53030;
+        }
+
+        .refresh-button {
+          margin-top: 14px;
+          border: 0;
+          padding: 10px 16px;
+          border-radius: 10px;
+          background: #172033;
+          color: white;
+          cursor: pointer;
+          font-weight: 700;
+        }
+
+        @media (max-width: 1100px) {
+          .kpi-grid {
+            grid-template-columns: repeat(2, 1fr);
+          }
+
+          .chart-grid {
+            grid-template-columns: 1fr;
           }
         }
 
-        @media (max-width: 720px) {
+        @media (max-width: 700px) {
           .dashboard {
-            padding: 24px 16px 35px;
+            padding: 16px;
           }
 
           .header {
             align-items: flex-start;
             flex-direction: column;
-            gap: 18px;
           }
 
-          .headerRight {
+          .report-date {
             width: 100%;
-            justify-content: space-between;
+            text-align: left;
           }
 
-          .kpiGrid {
+          .report-date-value {
+            font-size: 20px;
+          }
+
+          .kpi-grid {
             grid-template-columns: 1fr;
           }
 
-          .chartHeader {
-            align-items: flex-start;
-            flex-direction: column;
-          }
-
-          .legend {
-            margin-left: 0;
+          .kpi-value {
+            font-size: 24px;
           }
         }
-      `}
-      </style>
+      `}</style>
+
+      <div className="container">
+        <header className="header">
+          <div className="brand">
+            <div className="brand-icon">
+              <Icon type="chart" />
+            </div>
+
+            <div>
+              <div className="brand-title">PTANZO ALBAY</div>
+              <div className="brand-subtitle">
+                Sales & Operations Dashboard
+              </div>
+            </div>
+          </div>
+
+          <div className="report-date">
+            <div className="report-date-label">REPORT DATE</div>
+            <div className="report-date-value">{reportDate}</div>
+          </div>
+        </header>
+
+        {loading && !data ? (
+          <div className="status">Loading dashboard...</div>
+        ) : error ? (
+          <div className="status error">
+            {error}
+            <br />
+            <button className="refresh-button" onClick={loadDashboard}>
+              Try Again
+            </button>
+          </div>
+        ) : (
+          <>
+            <section className="kpi-grid">
+              {kpis.map((kpi) => (
+                <div className={"kpi-card " + kpi.className} key={kpi.title}>
+                  <div className="kpi-top">
+                    <div className="kpi-title">{kpi.title}</div>
+
+                    <div className="kpi-icon">
+                      <Icon type={kpi.icon} />
+                    </div>
+                  </div>
+
+                  <div className="kpi-value">
+                    {formatMoney(Number(kpi.value))}
+                  </div>
+                </div>
+              ))}
+            </section>
+
+            <section className="chart-grid">
+              <div className="chart-card">
+                <div className="chart-header">
+                  <div className="chart-title-wrap">
+                    <div className="chart-icon">
+                      <Icon type="chart" />
+                    </div>
+
+                    <div>
+                      <div className="chart-title">
+                        MTD Sales Performance
+                      </div>
+                      <div className="chart-subtitle">
+                        Daily sales for the current month
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="chart-area">
+                  <BarChart
+                    data={dailySales}
+                    valueKey="sales"
+                    labelKey="date"
+                  />
+                </div>
+              </div>
+
+              <div className="chart-card">
+                <div className="chart-header">
+                  <div className="chart-title-wrap">
+                    <div className="chart-icon">
+                      <Icon type="chart" />
+                    </div>
+
+                    <div>
+                      <div className="chart-title">
+                        YTD Sales Performance
+                      </div>
+                      <div className="chart-subtitle">
+                        Monthly sales performance for 2026
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="chart-area">
+                  <BarChart
+                    data={ytdSales}
+                    valueKey="sales"
+                    labelKey="month"
+                    compact={true}
+                  />
+                </div>
+              </div>
+            </section>
+          </>
+        )}
+      </div>
     </main>
   );
 }
+```
