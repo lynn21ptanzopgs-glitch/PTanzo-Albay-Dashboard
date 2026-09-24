@@ -174,18 +174,17 @@ export default function Dashboard() {
 
         <header className="header">
           <div className="brand">
-            <div className="brand-icon">P</div>
+           <div className="brand">
+  <div>
+    <div className="brand-title">
+      PTANZO ALBAY
+    </div>
 
-            <div>
-              <div className="brand-title">
-                PTANZO ALBAY
-              </div>
-
-              <div className="brand-subtitle">
-                Sales & Operations Dashboard
-              </div>
-            </div>
-          </div>
+    <div className="brand-subtitle">
+      Sales & Operations Dashboard
+    </div>
+  </div>
+</div>
 
           <div className="report-date">
             <div className="report-date-label">
