@@ -270,4 +270,12 @@ body {
 }
 
 .bar-value {
-```
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: #657187;
+  white-space: nowrap;
+  font-weight: 700;
+}
