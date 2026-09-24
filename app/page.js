@@ -8,12 +8,8 @@ const API_URL =
 export default function Home() {
   const [data, setData] = useState(null);
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(true);
 
-  const loadData = () => {
-    setLoading(true);
-    setError("");
-
+  useEffect(() => {
     fetch(API_URL)
       .then((response) => {
         if (!response.ok) {
@@ -26,17 +22,10 @@ export default function Home() {
       })
       .catch((err) => {
         setError(err.message);
-      })
-      .finally(() => {
-        setLoading(false);
       });
-  };
-
-  useEffect(() => {
-    loadData();
   }, []);
 
-  const money = (value) => {
+  const formatMoney = (value) => {
     if (typeof value !== "number") return "—";
 
     return `₱${value.toLocaleString("en-PH", {
@@ -45,140 +34,197 @@ export default function Home() {
     })}`;
   };
 
-  const today = new Date().toLocaleDateString("en-PH", {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-
   const cards = [
-    {
-      title: "Today's Sales",
-      value: data?.["Today's Sales"],
-      icon: "₱",
-      type: "sales",
-    },
-    {
-      title: "MTD Sales",
-      value: data?.["MTD Sales"],
-      icon: "↗",
-      type: "sales",
-    },
-    {
-      title: "YTD Sales",
-      value: data?.["YTD Sales"],
-      icon: "▣",
-      type: "sales",
-    },
-    {
-      title: "Pending / Unpaid",
-      value: data?.["Pending / Unpaid"],
-      icon: "!",
-      type: "pending",
-    },
-    {
-      title: "Paid",
-      value: data?.["Paid"],
-      icon: "✓",
-      type: "paid",
-    },
-    {
-      title: "Purchases MTD",
-      value: data?.["Purchases MTD"],
-      icon: "🛒",
-      type: "purchase",
-    },
-    {
-      title: "Goods Inventory",
-      value: data?.["Goods Inventory"],
-      icon: "📦",
-      type: "inventory",
-    },
-    {
-      title: "Expenses MTD",
-      value: data?.["Expenses MTD"],
-      icon: "−",
-      type: "expense",
-    },
+    ["Today's Sales", data?.["Today's Sales"], "₱"],
+    ["MTD Sales", data?.["MTD Sales"], "↗"],
+    ["YTD Sales", data?.["YTD Sales"], "▣"],
+    ["Pending / Unpaid", data?.["Pending / Unpaid"], "!"],
+    ["Paid", data?.["Paid"], "✓"],
+    ["Purchases MTD", data?.["Purchases MTD"], "🛒"],
+    ["Goods Inventory", data?.["Goods Inventory"], "📦"],
+    ["Expenses MTD", data?.["Expenses MTD"], "−"],
   ];
+
+  const dailyData =
+    data?.dailyNetworth?.filter(
+      (item) => item.sales > 0 || item.inventory > 0
+    ) || [];
 
   return (
     <main className="dashboard">
       <header className="header">
         <div>
-          <div className="eyebrow">PTANZO ALBAY</div>
+          <div className="brand">PTANZO ALBAY</div>
           <h1>Sales & Operations Dashboard</h1>
-          <p className="date">{today}</p>
         </div>
 
-        <button className="refresh" onClick={loadData} disabled={loading}>
-          {loading ? "Refreshing..." : "↻ Refresh"}
-        </button>
+        <div className="headerRight">
+          <div className="date">
+            {new Date().toLocaleDateString("en-US", {
+              weekday: "long",
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </div>
+
+          <button onClick={() => window.location.reload()}>
+            ↻ Refresh
+          </button>
+        </div>
       </header>
 
       {error && <div className="error">{error}</div>}
 
-      {loading && !data ? (
+      {!data && !error && (
         <div className="loading">Loading dashboard...</div>
-      ) : (
-        <>
-          <section className="section">
-            <div className="section-title">
-              <h2>Key Performance Indicators</h2>
-              <span>Live from Google Sheets</span>
-            </div>
+      )}
 
-            <div className="cards">
-              {cards.map((card) => (
-                <div className={`card ${card.type}`} key={card.title}>
-                  <div className="card-top">
-                    <div className="icon">{card.icon}</div>
-                    <span className="card-label">{card.title}</span>
+      {data && (
+        <>
+          <section>
+            <div className="sectionTitle">Key Performance Indicators</div>
+            <div className="sectionSubtitle">Live from Google Sheets</div>
+
+            <div className="kpiGrid">
+              {cards.map(([label, value, icon]) => (
+                <div className="kpiCard" key={label}>
+                  <div className="kpiTop">
+                    <span className="icon">{icon}</span>
                   </div>
 
-                  <div className="amount">{money(card.value)}</div>
+                  <div className="kpiLabel">{label}</div>
+
+                  <div className="kpiValue">
+                    {formatMoney(value)}
+                  </div>
                 </div>
               ))}
             </div>
           </section>
 
-          <section className="overview">
-            <div className="overview-card">
-              <div className="overview-label">MTD SALES</div>
-              <div className="overview-value">
-                {money(data?.["MTD Sales"])}
+          <section className="overviewSection">
+            <div className="overviewCard">
+              <div className="overviewLabel">MTD SALES</div>
+              <div className="overviewValue">
+                {formatMoney(data["MTD Sales"])}
               </div>
-              <div className="overview-note">
+              <div className="overviewText">
                 Month-to-date sales performance
               </div>
             </div>
 
-            <div className="overview-card">
-              <div className="overview-label">GOODS INVENTORY</div>
-              <div className="overview-value">
-                {money(data?.["Goods Inventory"])}
+            <div className="overviewCard">
+              <div className="overviewLabel">GOODS INVENTORY</div>
+              <div className="overviewValue">
+                {formatMoney(data["Goods Inventory"])}
               </div>
-              <div className="overview-note">
+              <div className="overviewText">
                 Current goods inventory value
               </div>
             </div>
 
-            <div className="overview-card">
-              <div className="overview-label">AR OUTSTANDING</div>
-              <div className="overview-value">
-                {money(data?.["Pending / Unpaid"])}
+            <div className="overviewCard">
+              <div className="overviewLabel">AR OUTSTANDING</div>
+              <div className="overviewValue">
+                {formatMoney(data["Pending / Unpaid"])}
               </div>
-              <div className="overview-note">
+              <div className="overviewText">
                 Accounts pending collection
               </div>
+            </div>
+          </section>
+
+          <section className="trendSection">
+            <div className="sectionTitle">
+              Daily Sales & Goods Inventory
+            </div>
+
+            <div className="sectionSubtitle">
+              Historical daily movement from Daily Networth
+            </div>
+
+            <div className="chartCard">
+              {dailyData.length === 0 ? (
+                <div className="noData">
+                  No daily networth data available.
+                </div>
+              ) : (
+                <div className="chart">
+                  <div className="chartLegend">
+                    <span>● Daily Sales</span>
+                    <span>● Goods Inventory</span>
+                  </div>
+
+                  <div className="chartArea">
+                    {dailyData.map((item, index) => {
+                      const maxValue = Math.max(
+                        ...dailyData.map((d) =>
+                          Math.max(d.sales, d.inventory)
+                        )
+                      );
+
+                      const salesHeight =
+                        maxValue > 0
+                          ? (item.sales / maxValue) * 100
+                          : 0;
+
+                      const inventoryHeight =
+                        maxValue > 0
+                          ? (item.inventory / maxValue) * 100
+                          : 0;
+
+                      return (
+                        <div className="chartColumn" key={item.date}>
+                          <div className="bars">
+                            <div
+                              className="bar salesBar"
+                              style={{
+                                height: `${Math.max(
+                                  salesHeight,
+                                  2
+                                )}%`,
+                              }}
+                              title={`Sales: ${formatMoney(
+                                item.sales
+                              )}`}
+                            />
+
+                            <div
+                              className="bar inventoryBar"
+                              style={{
+                                height: `${Math.max(
+                                  inventoryHeight,
+                                  2
+                                )}%`,
+                              }}
+                              title={`Inventory: ${formatMoney(
+                                item.inventory
+                              )}`}
+                            />
+                          </div>
+
+                          <div className="chartDate">
+                            {new Date(
+                              item.date + "T00:00:00"
+                            ).toLocaleDateString("en-US", {
+                              month: "short",
+                              day: "numeric",
+                            })}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
             </div>
           </section>
         </>
       )}
 
       <footer>
-        <span>PTanzo Albay Dashboard</span>
+        <strong>PTanzo Albay Dashboard</strong>
         <span>Connected to Google Sheets</span>
       </footer>
 
@@ -187,198 +233,210 @@ export default function Home() {
           box-sizing: border-box;
         }
 
+        body {
+          margin: 0;
+        }
+
         .dashboard {
           min-height: 100vh;
-          background: #f4f6f8;
-          color: #17202a;
+          background: #f5f7fa;
+          color: #172033;
           padding: 32px 42px;
-          font-family: Arial, Helvetica, sans-serif;
+          font-family: Arial, sans-serif;
         }
 
         .header {
-          max-width: 1400px;
-          margin: 0 auto 34px;
           display: flex;
-          align-items: center;
           justify-content: space-between;
-          gap: 20px;
+          align-items: center;
+          margin-bottom: 38px;
         }
 
-        .eyebrow {
-          font-size: 12px;
-          font-weight: 700;
+        .brand {
+          font-size: 13px;
+          font-weight: 800;
           letter-spacing: 2px;
-          color: #68717d;
           margin-bottom: 8px;
         }
 
         h1 {
           margin: 0;
-          font-size: 32px;
-          font-weight: 700;
-          letter-spacing: -0.8px;
+          font-size: 28px;
+        }
+
+        .headerRight {
+          text-align: right;
         }
 
         .date {
-          margin: 8px 0 0;
-          color: #707984;
           font-size: 14px;
+          margin-bottom: 12px;
+          color: #687386;
         }
 
-        .refresh {
+        button {
           border: 0;
-          border-radius: 10px;
-          padding: 12px 18px;
-          background: #17202a;
+          background: #172033;
           color: white;
-          font-size: 14px;
-          font-weight: 600;
+          padding: 9px 15px;
+          border-radius: 8px;
           cursor: pointer;
+          font-weight: 600;
         }
 
-        .refresh:disabled {
-          opacity: 0.6;
-          cursor: default;
-        }
-
-        .section,
-        .overview,
-        footer {
-          max-width: 1400px;
-          margin-left: auto;
-          margin-right: auto;
-        }
-
-        .section-title {
-          display: flex;
-          align-items: baseline;
-          justify-content: space-between;
-          margin-bottom: 15px;
-        }
-
-        .section-title h2 {
-          margin: 0;
+        .sectionTitle {
           font-size: 18px;
+          font-weight: 800;
         }
 
-        .section-title span {
-          color: #7b838d;
-          font-size: 12px;
+        .sectionSubtitle {
+          margin-top: 5px;
+          margin-bottom: 18px;
+          color: #7b8494;
+          font-size: 13px;
         }
 
-        .cards {
+        .kpiGrid {
           display: grid;
           grid-template-columns: repeat(4, 1fr);
           gap: 16px;
         }
 
-        .card {
+        .kpiCard,
+        .overviewCard,
+        .chartCard {
           background: white;
-          border: 1px solid #e7eaee;
+          border: 1px solid #e6e9ee;
           border-radius: 14px;
-          padding: 20px;
-          min-height: 145px;
-          box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+          box-shadow: 0 3px 12px rgba(20, 30, 50, 0.04);
         }
 
-        .card-top {
-          display: flex;
-          align-items: center;
-          gap: 10px;
+        .kpiCard {
+          padding: 20px;
+        }
+
+        .kpiTop {
+          height: 25px;
         }
 
         .icon {
-          width: 34px;
-          height: 34px;
-          border-radius: 9px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          background: #f0f2f4;
-          font-size: 16px;
+          font-size: 17px;
           font-weight: 700;
         }
 
-        .card-label {
-          color: #69727d;
+        .kpiLabel {
+          margin-top: 13px;
           font-size: 13px;
-          font-weight: 600;
+          color: #6d7788;
         }
 
-        .amount {
-          margin-top: 23px;
+        .kpiValue {
+          margin-top: 7px;
           font-size: 25px;
-          font-weight: 700;
-          letter-spacing: -0.5px;
+          font-weight: 800;
         }
 
-        .pending .icon {
-          background: #fff1e8;
-        }
-
-        .paid .icon {
-          background: #eaf7ef;
-        }
-
-        .inventory .icon {
-          background: #eef3ff;
-        }
-
-        .purchase .icon {
-          background: #f5efff;
-        }
-
-        .expense .icon {
-          background: #fff0f0;
-        }
-
-        .overview {
+        .overviewSection {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
-          gap: 16px;
+          gap: 18px;
           margin-top: 30px;
         }
 
-        .overview-card {
-          background: #17202a;
-          color: white;
-          border-radius: 14px;
-          padding: 23px;
+        .overviewCard {
+          padding: 24px;
         }
 
-        .overview-label {
-          font-size: 11px;
-          letter-spacing: 1.5px;
-          font-weight: 700;
-          opacity: 0.65;
-        }
-
-        .overview-value {
-          margin-top: 10px;
-          font-size: 26px;
-          font-weight: 700;
-        }
-
-        .overview-note {
-          margin-top: 7px;
+        .overviewLabel {
           font-size: 12px;
-          opacity: 0.65;
+          letter-spacing: 1px;
+          font-weight: 800;
+          color: #707a8b;
         }
 
-        .loading {
-          max-width: 1400px;
-          margin: 80px auto;
+        .overviewValue {
+          margin-top: 9px;
+          font-size: 27px;
+          font-weight: 800;
+        }
+
+        .overviewText {
+          margin-top: 7px;
+          font-size: 13px;
+          color: #858e9d;
+        }
+
+        .trendSection {
+          margin-top: 32px;
+        }
+
+        .chartCard {
+          padding: 24px;
+          overflow-x: auto;
+        }
+
+        .chartLegend {
+          display: flex;
+          gap: 22px;
+          font-size: 12px;
+          color: #697386;
+          margin-bottom: 20px;
+        }
+
+        .chartArea {
+          min-width: 800px;
+          height: 330px;
+          display: flex;
+          align-items: stretch;
+          gap: 7px;
+          border-bottom: 1px solid #dfe3e8;
+          padding: 20px 8px 0;
+        }
+
+        .chartColumn {
+          flex: 1;
+          min-width: 24px;
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-end;
+        }
+
+        .bars {
+          height: 280px;
+          display: flex;
+          align-items: flex-end;
+          justify-content: center;
+          gap: 3px;
+        }
+
+        .bar {
+          width: 45%;
+          min-height: 3px;
+          border-radius: 4px 4px 0 0;
+        }
+
+        .salesBar {
+          background: #172033;
+        }
+
+        .inventoryBar {
+          background: #9aa4b2;
+        }
+
+        .chartDate {
           text-align: center;
-          color: #707984;
+          font-size: 10px;
+          color: #7d8796;
+          margin-top: 9px;
+          white-space: nowrap;
         }
 
+        .loading,
         .error {
-          max-width: 1400px;
-          margin: 0 auto 20px;
-          padding: 14px 18px;
-          border-radius: 10px;
-          background: #fff0f0;
-          color: #a33a3a;
+          background: white;
+          padding: 20px;
+          border-radius: 12px;
+          margin-bottom: 20px;
         }
 
         footer {
@@ -386,48 +444,41 @@ export default function Home() {
           justify-content: space-between;
           margin-top: 35px;
           padding-top: 20px;
-          border-top: 1px solid #e1e5e9;
-          color: #8a929b;
-          font-size: 11px;
+          border-top: 1px solid #e2e6eb;
+          font-size: 12px;
+          color: #7b8492;
         }
 
-        @media (max-width: 1000px) {
-          .cards {
+        @media (max-width: 900px) {
+          .dashboard {
+            padding: 24px;
+          }
+
+          .kpiGrid {
             grid-template-columns: repeat(2, 1fr);
           }
 
-          .overview {
+          .overviewSection {
             grid-template-columns: 1fr;
-          }
-        }
-
-        @media (max-width: 650px) {
-          .dashboard {
-            padding: 24px 16px;
           }
 
           .header {
             align-items: flex-start;
-            flex-direction: column;
+            gap: 20px;
           }
+        }
 
-          h1 {
-            font-size: 25px;
-          }
-
-          .cards {
+        @media (max-width: 600px) {
+          .kpiGrid {
             grid-template-columns: 1fr;
           }
 
-          .section-title {
-            align-items: flex-start;
+          .header {
             flex-direction: column;
-            gap: 5px;
           }
 
-          footer {
-            flex-direction: column;
-            gap: 5px;
+          .headerRight {
+            text-align: left;
           }
         }
       `}</style>
