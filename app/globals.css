@@ -6,14 +6,14 @@ body {
 }
 
 body {
-  background: #f4f6f8;
-  color: #1f2937;
+  background: #f3eee7;
+  color: #3f342c;
 }
 
 .dashboard {
   min-height: 100vh;
   padding: 40px;
-  background: #f4f6f8;
+  background: #f3eee7;
 }
 
 .container {
@@ -27,23 +27,23 @@ body {
    =============================== */
 
 .header {
-  background: #0f172a;
-  color: white;
+  background: #4a3b32;
+  color: #fffaf5;
   padding: 25px;
   border-radius: 15px;
   margin-bottom: 25px;
-  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.12);
+  box-shadow: 0 4px 14px rgba(74, 59, 50, 0.12);
 }
 
 .brand-title {
   font-size: 30px;
   font-weight: 700;
-  color: white;
+  color: #fffaf5;
 }
 
 .brand-subtitle {
   margin-top: 5px;
-  color: #cbd5e1;
+  color: #d8cbc0;
 }
 
 .report-date {
@@ -52,13 +52,13 @@ body {
 
 .report-date-label {
   font-size: 12px;
-  color: #94a3b8;
+  color: #c7b7aa;
 }
 
 .report-date-value {
   font-size: 18px;
   font-weight: 600;
-  color: white;
+  color: #fffaf5;
 }
 
 
@@ -76,12 +76,12 @@ body {
 .kpi-card {
   position: relative;
   overflow: hidden;
-  background: white;
+  background: #fffaf5;
   padding: 22px;
   border-radius: 15px;
   min-height: 100px;
-  border: 1px solid #e5e7eb;
-  box-shadow: 0 3px 10px rgba(15, 23, 42, 0.05);
+  border: 1px solid #e4d9ce;
+  box-shadow: 0 3px 10px rgba(74, 59, 50, 0.06);
 }
 
 .kpi-card::before {
@@ -91,7 +91,7 @@ body {
   left: 0;
   width: 5px;
   height: 100%;
-  background: #2563eb;
+  background: #b86f52;
 }
 
 .kpi-top {
@@ -102,20 +102,20 @@ body {
 
 .kpi-title {
   font-size: 14px;
-  color: #64748b;
+  color: #78695e;
 }
 
 .kpi-icon {
   font-size: 20px;
   font-weight: bold;
-  color: #2563eb;
+  color: #a85f45;
 }
 
 .kpi-value {
   margin-top: 15px;
   font-size: 25px;
   font-weight: 700;
-  color: #0f172a;
+  color: #3f342c;
 }
 
 
@@ -135,23 +135,23 @@ body {
    =============================== */
 
 .chart-card {
-  background: white;
+  background: #fffaf5;
   border-radius: 15px;
   padding: 25px;
   min-height: 350px;
-  border: 1px solid #e5e7eb;
-  box-shadow: 0 3px 10px rgba(15, 23, 42, 0.05);
+  border: 1px solid #e4d9ce;
+  box-shadow: 0 3px 10px rgba(74, 59, 50, 0.06);
 }
 
 .chart-title {
   font-size: 18px;
   font-weight: 700;
-  color: #0f172a;
+  color: #3f342c;
 }
 
 .chart-subtitle {
   margin-top: 5px;
-  color: #64748b;
+  color: #85756a;
   font-size: 13px;
 }
 
@@ -162,14 +162,14 @@ body {
 
 .chart-area {
   margin-top: 30px;
-  height: 250px;
+  height: 290px;
 }
 
 .chart-bars {
-  height: 220px;
+  height: 250px;
   display: flex;
   align-items: flex-end;
-  gap: 8px;
+  gap: 14px;
 }
 
 .bar-column {
@@ -182,34 +182,37 @@ body {
 }
 
 .bar-value {
-  font-size: 10px;
-  margin-bottom: 5px;
-  color: #475569;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 7px;
+  color: #5c4b40;
+  white-space: nowrap;
 }
 
 .bar-track {
   width: 100%;
-  height: 180px;
+  height: 195px;
   display: flex;
   align-items: flex-end;
 }
 
 .bar-fill {
   width: 100%;
-  background: #2563eb;
-  border-radius: 5px 5px 0 0;
+  background: #b86f52;
+  border-radius: 6px 6px 0 0;
 }
 
 .bar-label {
-  margin-top: 8px;
-  font-size: 11px;
-  color: #64748b;
+  margin-top: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #66574d;
 }
 
 .empty-chart {
   margin-top: 50px;
   text-align: center;
-  color: #777;
+  color: #85756a;
 }
 
 
@@ -224,7 +227,7 @@ body {
 .team-main-value {
   font-size: 32px;
   font-weight: 700;
-  color: #0f172a;
+  color: #3f342c;
   margin-bottom: 22px;
 }
 
@@ -238,26 +241,26 @@ body {
   align-items: center;
   margin-bottom: 8px;
   font-size: 14px;
-  color: #64748b;
+  color: #78695e;
 }
 
 .team-progress-label strong {
   font-size: 15px;
-  color: #16a34a;
+  color: #6f7d4f;
 }
 
 .team-progress-track {
   width: 100%;
   height: 10px;
   border-radius: 999px;
-  background: #e2e8f0;
+  background: #e5dfd6;
   overflow: hidden;
 }
 
 .team-progress-fill {
   height: 100%;
   border-radius: 999px;
-  background: #16a34a;
+  background: #7d8b58;
   transition: width 0.3s ease;
 }
 
@@ -275,13 +278,13 @@ body {
 
 .team-detail span {
   font-size: 13px;
-  color: #64748b;
+  color: #85756a;
 }
 
 .team-detail strong {
   font-size: 16px;
   font-weight: 700;
-  color: #0f172a;
+  color: #3f342c;
 }
 
 
@@ -335,6 +338,18 @@ body {
   .ytd-card {
     grid-column: auto;
   }
+
+  .chart-bars {
+    gap: 8px;
+  }
+
+  .bar-value {
+    font-size: 10px;
+  }
+
+  .bar-label {
+    font-size: 11px;
+  }
 }
 
 @media (max-width: 600px) {
@@ -352,5 +367,13 @@ body {
 
   .team-details {
     grid-template-columns: 1fr;
+  }
+
+  .chart-area {
+    overflow-x: auto;
+  }
+
+  .chart-bars {
+    min-width: 700px;
   }
 }
