@@ -409,4 +409,9 @@ export default function Dashboard() {
             data={teamPerformance.KAS}
           />
 
-        </section>
+                </section>
+
+      </div>
+    </main>
+  );
+}
