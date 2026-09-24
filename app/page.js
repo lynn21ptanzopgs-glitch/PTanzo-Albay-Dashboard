@@ -91,7 +91,11 @@ function TeamPerformanceCard({ name, data }) {
 
   const sales = Number(data.sales) || 0;
   const target = Number(data.target) || 1500000;
-  const performance = Number(data.performance) || 0;
+  const performanceRaw = Number(data.performance) || 0;
+const performance =
+  performanceRaw <= 1
+    ? performanceRaw * 100
+    : performanceRaw;
   const balanceToSell = Math.max(target - sales, 0);
 
   return (
