@@ -38,50 +38,15 @@ function Icon({ type }) {
   );
 }
 
-function SalesChart({ data }) {
-  if (!data || data.length === 0) {
-    return <div className="empty-chart">No sales data available.</div>;
-  }
-
-  const max = Math.max(...data.map((item) => Number(item.sales) || 0), 1);
-
-  return (
-    <div className="chart-area">
-      <div className="bar-chart">
-        <div className="chart-bars">
-          {data.map((item, index) => {
-            const sales = Number(item.sales) || 0;
-            const height = Math.max((sales / max) * 100, 3);
-
-            return (
-              <div className="bar-column" key={`${item.date}-${index}`}>
-                <div className="bar-value">{compact(sales)}</div>
-
-                <div className="bar-track">
-                  <div
-                    className="bar-fill"
-                    style={{ height: `${height}%` }}
-                  />
-                </div>
-
-                <div className="bar-label">
-                  {String(item.date).slice(8, 10)}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </div>
-  );
-}
-
 function YtdChart({ data }) {
   if (!data || data.length === 0) {
     return <div className="empty-chart">No sales data available.</div>;
   }
 
-  const max = Math.max(...data.map((item) => Number(item.sales) || 0), 1);
+  const max = Math.max(
+    ...data.map((item) => Number(item.sales) || 0),
+    1
+  );
 
   return (
     <div className="chart-area">
@@ -92,8 +57,13 @@ function YtdChart({ data }) {
             const height = Math.max((sales / max) * 100, 3);
 
             return (
-              <div className="bar-column" key={`${item.month}-${index}`}>
-                <div className="bar-value">{compact(sales)}</div>
+              <div
+                className="bar-column"
+                key={`${item.month}-${index}`}
+              >
+                <div className="bar-value">
+                  {compact(sales)}
+                </div>
 
                 <div className="bar-track">
                   <div
@@ -109,6 +79,75 @@ function YtdChart({ data }) {
             );
           })}
         </div>
+      </div>
+    </div>
+  );
+}
+
+function TeamPerformanceCard({ name, data }) {
+  if (!data) {
+    return null;
+  }
+
+  const sales = Number(data.sales) || 0;
+  const target = Number(data.target) || 1500000;
+  const performance = Number(data.performance) || 0;
+  const balanceToSell = Math.max(target - sales, 0);
+
+  return (
+    <div className="chart-card">
+      <div className="chart-header">
+        <div className="chart-title-wrap">
+          <div className="chart-icon">↗</div>
+
+          <div>
+            <div className="chart-title">
+              {name} Performance
+            </div>
+
+            <div className="chart-subtitle">
+              YTD sales performance
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="team-performance">
+
+        <div className="team-main-value">
+          {money(sales)}
+        </div>
+
+        <div className="team-progress">
+          <div className="team-progress-label">
+            <span>Performance</span>
+            <strong>{performance}%</strong>
+          </div>
+
+          <div className="team-progress-track">
+            <div
+              className="team-progress-fill"
+              style={{
+                width: `${Math.min(performance, 100)}%`,
+              }}
+            />
+          </div>
+        </div>
+
+        <div className="team-details">
+
+          <div className="team-detail">
+            <span>Target</span>
+            <strong>{money(target)}</strong>
+          </div>
+
+          <div className="team-detail">
+            <span>Balance to Sell</span>
+            <strong>{money(balanceToSell)}</strong>
+          </div>
+
+        </div>
+
       </div>
     </div>
   );
@@ -150,43 +189,45 @@ export default function Dashboard() {
     return (
       <main className="dashboard">
         <div className="container">
-          <div className="status">Loading dashboard...</div>
+          <div className="status">
+            Loading dashboard...
+          </div>
         </div>
       </main>
     );
   }
 
-  const dailySales = Array.isArray(data.dailyNetworth)
-    ? data.dailyNetworth.filter(
-        (item) => Number(item.sales) > 0
-      )
+  const ytdSales = Array.isArray(data.ytdSales)
+    ? data.ytdSales
     : [];
 
-  const ytdSales = Array.isArray(data.ytdSales)
-    ? data.ytdSales.filter(
-        (item) => Number(item.sales) > 0
-      )
-    : [];
+  const teamPerformance =
+    data.teamPerformance || {};
 
   return (
     <main className="dashboard">
       <div className="container">
 
-        <header className="header">
-          <div className="brand">
-           <div className="brand">
-  <div>
-    <div className="brand-title">
-      PTANZO ALBAY
-    </div>
+        {/* HEADER */}
 
-    <div className="brand-subtitle">
-      Sales & Operations Dashboard
-    </div>
-  </div>
-</div>
+        <header className="header">
+
+          <div className="brand">
+
+            <div>
+              <div className="brand-title">
+                PTANZO ALBAY
+              </div>
+
+              <div className="brand-subtitle">
+                Sales & Operations Dashboard
+              </div>
+            </div>
+
+          </div>
 
           <div className="report-date">
+
             <div className="report-date-label">
               REPORT DATE
             </div>
@@ -199,8 +240,13 @@ export default function Dashboard() {
                 year: "numeric",
               })}
             </div>
+
           </div>
+
         </header>
+
+
+        {/* KPI CARDS */}
 
         <section className="kpi-grid">
 
@@ -209,6 +255,7 @@ export default function Dashboard() {
               <div className="kpi-title">
                 Today's Sales
               </div>
+
               <Icon type="sales" />
             </div>
 
@@ -217,11 +264,13 @@ export default function Dashboard() {
             </div>
           </div>
 
+
           <div className="kpi-card sales-card">
             <div className="kpi-top">
               <div className="kpi-title">
                 MTD Sales
               </div>
+
               <Icon type="sales" />
             </div>
 
@@ -230,11 +279,13 @@ export default function Dashboard() {
             </div>
           </div>
 
+
           <div className="kpi-card sales-card">
             <div className="kpi-top">
               <div className="kpi-title">
                 YTD Sales
               </div>
+
               <Icon type="sales" />
             </div>
 
@@ -243,11 +294,13 @@ export default function Dashboard() {
             </div>
           </div>
 
+
           <div className="kpi-card receivable-card">
             <div className="kpi-top">
               <div className="kpi-title">
                 Accounts Receivable
               </div>
+
               <Icon type="receivable" />
             </div>
 
@@ -256,11 +309,13 @@ export default function Dashboard() {
             </div>
           </div>
 
+
           <div className="kpi-card purchase-card">
             <div className="kpi-top">
               <div className="kpi-title">
                 Purchases MTD
               </div>
+
               <Icon type="purchase" />
             </div>
 
@@ -269,11 +324,13 @@ export default function Dashboard() {
             </div>
           </div>
 
+
           <div className="kpi-card inventory-card">
             <div className="kpi-top">
               <div className="kpi-title">
                 Goods Inventory
               </div>
+
               <Icon type="inventory" />
             </div>
 
@@ -282,11 +339,13 @@ export default function Dashboard() {
             </div>
           </div>
 
+
           <div className="kpi-card expense-card">
             <div className="kpi-top">
               <div className="kpi-title">
                 Expenses MTD
               </div>
+
               <Icon type="expense" />
             </div>
 
@@ -297,34 +356,23 @@ export default function Dashboard() {
 
         </section>
 
+
+        {/* YTD SALES */}
+
         <section className="chart-grid">
 
           <div className="chart-card">
+
             <div className="chart-header">
+
               <div className="chart-title-wrap">
-                <div className="chart-icon">↗</div>
 
-                <div>
-                  <div className="chart-title">
-                    MTD Sales Performance
-                  </div>
-
-                  <div className="chart-subtitle">
-                    Daily sales for the current month
-                  </div>
+                <div className="chart-icon">
+                  ▦
                 </div>
-              </div>
-            </div>
-
-            <SalesChart data={dailySales} />
-          </div>
-
-          <div className="chart-card">
-            <div className="chart-header">
-              <div className="chart-title-wrap">
-                <div className="chart-icon">▦</div>
 
                 <div>
+
                   <div className="chart-title">
                     YTD Sales Performance
                   </div>
@@ -332,12 +380,33 @@ export default function Dashboard() {
                   <div className="chart-subtitle">
                     Monthly sales performance for 2026
                   </div>
+
                 </div>
+
               </div>
+
             </div>
 
             <YtdChart data={ytdSales} />
+
           </div>
+
+        </section>
+
+
+        {/* DSS / KAS PERFORMANCE */}
+
+        <section className="chart-grid">
+
+          <TeamPerformanceCard
+            name="DSS"
+            data={teamPerformance.DSS}
+          />
+
+          <TeamPerformanceCard
+            name="KAS"
+            data={teamPerformance.KAS}
+          />
 
         </section>
 
