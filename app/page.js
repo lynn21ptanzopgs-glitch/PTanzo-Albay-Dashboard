@@ -39,8 +39,7 @@ export default function Home() {
     ["Today's Sales", data?.["Today's Sales"]],
     ["MTD Sales", data?.["MTD Sales"]],
     ["YTD Sales", data?.["YTD Sales"]],
-    ["Pending / Unpaid", data?.["Pending / Unpaid"]],
-    ["Paid", data?.["Paid"]],
+    ["Accounts Receivable", data?.["Pending / Unpaid"]],
     ["Purchases MTD", data?.["Purchases MTD"]],
     ["Goods Inventory", data?.["Goods Inventory"]],
     ["Expenses MTD", data?.["Expenses MTD"]],
@@ -56,6 +55,7 @@ export default function Home() {
       <header className="header">
         <div>
           <div className="brand">PTANZO ALBAY</div>
+
           <h1>Sales & Operations Dashboard</h1>
         </div>
 
@@ -97,45 +97,6 @@ export default function Home() {
                 </div>
               </div>
             ))}
-          </section>
-
-          {/* OVERVIEW */}
-          <section className="overviewGrid">
-            <div className="overviewCard">
-              <div className="overviewLabel">Sales Performance</div>
-
-              <div className="overviewValue">
-                {formatMoney(data?.["MTD Sales"])}
-              </div>
-
-              <div className="overviewText">
-                Month-to-date sales
-              </div>
-            </div>
-
-            <div className="overviewCard">
-              <div className="overviewLabel">Receivables</div>
-
-              <div className="overviewValue">
-                {formatMoney(data?.["Pending / Unpaid"])}
-              </div>
-
-              <div className="overviewText">
-                Outstanding accounts receivable
-              </div>
-            </div>
-
-            <div className="overviewCard">
-              <div className="overviewLabel">Inventory Position</div>
-
-              <div className="overviewValue">
-                {formatMoney(data?.["Goods Inventory"])}
-              </div>
-
-              <div className="overviewText">
-                Current goods inventory
-              </div>
-            </div>
           </section>
 
           {/* DAILY SALES & INVENTORY */}
@@ -346,7 +307,7 @@ export default function Home() {
           display: grid;
           grid-template-columns: repeat(4, 1fr);
           gap: 16px;
-          margin-bottom: 24px;
+          margin-bottom: 30px;
         }
 
         .kpiCard {
@@ -368,38 +329,6 @@ export default function Home() {
           font-size: 24px;
           font-weight: 800;
           letter-spacing: -0.5px;
-        }
-
-        .overviewGrid {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 16px;
-          margin-bottom: 28px;
-        }
-
-        .overviewCard {
-          background: white;
-          border: 1px solid #e3e7ed;
-          border-radius: 14px;
-          padding: 23px;
-        }
-
-        .overviewLabel {
-          font-size: 12px;
-          font-weight: 700;
-          color: #697386;
-          margin-bottom: 10px;
-        }
-
-        .overviewValue {
-          font-size: 26px;
-          font-weight: 800;
-          margin-bottom: 5px;
-        }
-
-        .overviewText {
-          font-size: 12px;
-          color: #8992a2;
         }
 
         .trendSection {
@@ -566,10 +495,6 @@ export default function Home() {
 
           .kpiGrid {
             grid-template-columns: repeat(2, 1fr);
-          }
-
-          .overviewGrid {
-            grid-template-columns: 1fr;
           }
         }
 
