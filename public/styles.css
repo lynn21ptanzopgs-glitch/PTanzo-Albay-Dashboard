@@ -68,3 +68,22 @@ body {
   font-size: 16px;
   font-weight: 700;
 }
+
+
+/* ===============================
+   YTD + TEAM PERFORMANCE LAYOUT
+   =============================== */
+
+.performance-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.ytd-card {
+  grid-column: 1 / -1;
+}
+
+.performance-layout .chart-card {
+  min-width: 0;
+}
