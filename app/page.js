@@ -15,6 +15,7 @@ export default function Home() {
         if (!response.ok) {
           throw new Error("Failed to load dashboard data.");
         }
+
         return response.json();
       })
       .then((result) => {
@@ -35,14 +36,14 @@ export default function Home() {
   };
 
   const cards = [
-    ["Today's Sales", data?.["Today's Sales"], "₱"],
-    ["MTD Sales", data?.["MTD Sales"], "↗"],
-    ["YTD Sales", data?.["YTD Sales"], "▣"],
-    ["Pending / Unpaid", data?.["Pending / Unpaid"], "!"],
-    ["Paid", data?.["Paid"], "✓"],
-    ["Purchases MTD", data?.["Purchases MTD"], "🛒"],
-    ["Goods Inventory", data?.["Goods Inventory"], "📦"],
-    ["Expenses MTD", data?.["Expenses MTD"], "−"],
+    ["Today's Sales", data?.["Today's Sales"]],
+    ["MTD Sales", data?.["MTD Sales"]],
+    ["YTD Sales", data?.["YTD Sales"]],
+    ["Pending / Unpaid", data?.["Pending / Unpaid"]],
+    ["Paid", data?.["Paid"]],
+    ["Purchases MTD", data?.["Purchases MTD"]],
+    ["Goods Inventory", data?.["Goods Inventory"]],
+    ["Expenses MTD", data?.["Expenses MTD"]],
   ];
 
   const dailyData =
@@ -59,22 +60,25 @@ export default function Home() {
         </div>
 
         <div className="headerRight">
-          <div className="date">
+          <div className="currentDate">
             {new Date().toLocaleDateString("en-US", {
               weekday: "long",
-              year: "numeric",
               month: "long",
               day: "numeric",
+              year: "numeric",
             })}
           </div>
 
-          <button onClick={() => window.location.reload()}>
-            ↻ Refresh
+          <button
+            className="refreshButton"
+            onClick={() => window.location.reload()}
+          >
+            Refresh
           </button>
         </div>
       </header>
 
-      {error && <div className="error">{error}</div>}
+      {error && <div className="errorBox">{error}</div>}
 
       {!data && !error && (
         <div className="loading">Loading dashboard...</div>
@@ -82,59 +86,59 @@ export default function Home() {
 
       {data && (
         <>
-          <section>
-            <div className="sectionTitle">Key Performance Indicators</div>
-            <div className="sectionSubtitle">Live from Google Sheets</div>
+          {/* KPI CARDS */}
+          <section className="kpiGrid">
+            {cards.map(([label, value]) => (
+              <div className="kpiCard" key={label}>
+                <div className="kpiLabel">{label}</div>
 
-            <div className="kpiGrid">
-              {cards.map(([label, value, icon]) => (
-                <div className="kpiCard" key={label}>
-                  <div className="kpiTop">
-                    <span className="icon">{icon}</span>
-                  </div>
-
-                  <div className="kpiLabel">{label}</div>
-
-                  <div className="kpiValue">
-                    {formatMoney(value)}
-                  </div>
+                <div className="kpiValue">
+                  {formatMoney(value)}
                 </div>
-              ))}
+              </div>
+            ))}
+          </section>
+
+          {/* OVERVIEW */}
+          <section className="overviewGrid">
+            <div className="overviewCard">
+              <div className="overviewLabel">Sales Performance</div>
+
+              <div className="overviewValue">
+                {formatMoney(data?.["MTD Sales"])}
+              </div>
+
+              <div className="overviewText">
+                Month-to-date sales
+              </div>
+            </div>
+
+            <div className="overviewCard">
+              <div className="overviewLabel">Receivables</div>
+
+              <div className="overviewValue">
+                {formatMoney(data?.["Pending / Unpaid"])}
+              </div>
+
+              <div className="overviewText">
+                Outstanding accounts receivable
+              </div>
+            </div>
+
+            <div className="overviewCard">
+              <div className="overviewLabel">Inventory Position</div>
+
+              <div className="overviewValue">
+                {formatMoney(data?.["Goods Inventory"])}
+              </div>
+
+              <div className="overviewText">
+                Current goods inventory
+              </div>
             </div>
           </section>
 
-          <section className="overviewSection">
-            <div className="overviewCard">
-              <div className="overviewLabel">MTD SALES</div>
-              <div className="overviewValue">
-                {formatMoney(data["MTD Sales"])}
-              </div>
-              <div className="overviewText">
-                Month-to-date sales performance
-              </div>
-            </div>
-
-            <div className="overviewCard">
-              <div className="overviewLabel">GOODS INVENTORY</div>
-              <div className="overviewValue">
-                {formatMoney(data["Goods Inventory"])}
-              </div>
-              <div className="overviewText">
-                Current goods inventory value
-              </div>
-            </div>
-
-            <div className="overviewCard">
-              <div className="overviewLabel">AR OUTSTANDING</div>
-              <div className="overviewValue">
-                {formatMoney(data["Pending / Unpaid"])}
-              </div>
-              <div className="overviewText">
-                Accounts pending collection
-              </div>
-            </div>
-          </section>
-
+          {/* DAILY SALES & INVENTORY */}
           <section className="trendSection">
             <div className="sectionTitle">
               Daily Sales & Goods Inventory
@@ -150,71 +154,99 @@ export default function Home() {
                   No daily networth data available.
                 </div>
               ) : (
-                <div className="chart">
+                <div className="lineChart">
                   <div className="chartLegend">
-                    <span>● Daily Sales</span>
-                    <span>● Goods Inventory</span>
+                    <span className="salesLegend">
+                      <span className="legendDot salesDot"></span>
+                      Daily Sales
+                    </span>
+
+                    <span className="inventoryLegend">
+                      <span className="legendDot inventoryDot"></span>
+                      Goods Inventory
+                    </span>
                   </div>
 
-                  <div className="chartArea">
-                    {dailyData.map((item, index) => {
-                      const maxValue = Math.max(
-                        ...dailyData.map((d) =>
-                          Math.max(d.sales, d.inventory)
-                        )
-                      );
+                  <div className="chartWrapper">
+                    <div className="yAxis">
+                      <span>₱1.4M</span>
+                      <span>₱1.2M</span>
+                      <span>₱1.0M</span>
+                      <span>₱800K</span>
+                      <span>₱600K</span>
+                      <span>₱400K</span>
+                      <span>₱200K</span>
+                      <span>₱0</span>
+                    </div>
 
-                      const salesHeight =
-                        maxValue > 0
-                          ? (item.sales / maxValue) * 100
-                          : 0;
+                    <div className="chartScroll">
+                      <div className="lineChartArea">
+                        {dailyData.map((item) => {
+                          const maxValue = Math.max(
+                            ...dailyData.map((d) =>
+                              Math.max(d.sales, d.inventory)
+                            )
+                          );
 
-                      const inventoryHeight =
-                        maxValue > 0
-                          ? (item.inventory / maxValue) * 100
-                          : 0;
+                          const salesPosition =
+                            100 -
+                            (item.sales / maxValue) * 90;
 
-                      return (
-                        <div className="chartColumn" key={item.date}>
-                          <div className="bars">
+                          const inventoryPosition =
+                            100 -
+                            (item.inventory / maxValue) * 90;
+
+                          return (
                             <div
-                              className="bar salesBar"
-                              style={{
-                                height: `${Math.max(
-                                  salesHeight,
-                                  2
-                                )}%`,
-                              }}
-                              title={`Sales: ${formatMoney(
-                                item.sales
-                              )}`}
-                            />
+                              className="lineColumn"
+                              key={item.date}
+                            >
+                              <div className="gridLines">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                              </div>
 
-                            <div
-                              className="bar inventoryBar"
-                              style={{
-                                height: `${Math.max(
-                                  inventoryHeight,
-                                  2
-                                )}%`,
-                              }}
-                              title={`Inventory: ${formatMoney(
-                                item.inventory
-                              )}`}
-                            />
-                          </div>
+                              <div className="lineArea">
+                                <div
+                                  className="salesPoint"
+                                  style={{
+                                    bottom: `${100 - salesPosition}%`,
+                                  }}
+                                  title={`Sales: ${formatMoney(
+                                    item.sales
+                                  )}`}
+                                />
 
-                          <div className="chartDate">
-                            {new Date(
-                              item.date + "T00:00:00"
-                            ).toLocaleDateString("en-US", {
-                              month: "short",
-                              day: "numeric",
-                            })}
-                          </div>
-                        </div>
-                      );
-                    })}
+                                <div
+                                  className="inventoryPoint"
+                                  style={{
+                                    bottom: `${100 - inventoryPosition}%`,
+                                  }}
+                                  title={`Inventory: ${formatMoney(
+                                    item.inventory
+                                  )}`}
+                                />
+                              </div>
+
+                              <div className="chartDate">
+                                {new Date(
+                                  item.date + "T00:00:00"
+                                ).toLocaleDateString("en-US", {
+                                  month: "short",
+                                  day: "numeric",
+                                })}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}
@@ -222,11 +254,6 @@ export default function Home() {
           </section>
         </>
       )}
-
-      <footer>
-        <strong>PTanzo Albay Dashboard</strong>
-        <span>Connected to Google Sheets</span>
-      </footer>
 
       <style jsx>{`
         * {
@@ -241,186 +268,281 @@ export default function Home() {
           min-height: 100vh;
           background: #f5f7fa;
           color: #172033;
-          padding: 32px 42px;
-          font-family: Arial, sans-serif;
+          padding: 34px 42px 50px;
+          font-family:
+            Arial,
+            Helvetica,
+            sans-serif;
         }
 
         .header {
           display: flex;
           justify-content: space-between;
-          align-items: center;
-          margin-bottom: 38px;
+          align-items: flex-end;
+          gap: 30px;
+          margin-bottom: 30px;
         }
 
         .brand {
           font-size: 13px;
           font-weight: 800;
           letter-spacing: 2px;
-          margin-bottom: 8px;
+          color: #697386;
+          margin-bottom: 7px;
         }
 
         h1 {
           margin: 0;
-          font-size: 28px;
+          font-size: 30px;
+          font-weight: 800;
+          letter-spacing: -0.6px;
         }
 
         .headerRight {
-          text-align: right;
+          display: flex;
+          align-items: center;
+          gap: 16px;
         }
 
-        .date {
-          font-size: 14px;
-          margin-bottom: 12px;
-          color: #687386;
+        .currentDate {
+          color: #697386;
+          font-size: 13px;
+          white-space: nowrap;
         }
 
-        button {
-          border: 0;
-          background: #172033;
-          color: white;
+        .refreshButton {
+          border: 1px solid #d7dce3;
+          background: white;
           padding: 9px 15px;
           border-radius: 8px;
+          font-weight: 700;
           cursor: pointer;
-          font-weight: 600;
+          color: #172033;
         }
 
-        .sectionTitle {
-          font-size: 18px;
-          font-weight: 800;
+        .refreshButton:hover {
+          background: #f0f2f5;
         }
 
-        .sectionSubtitle {
-          margin-top: 5px;
-          margin-bottom: 18px;
-          color: #7b8494;
-          font-size: 13px;
+        .loading {
+          background: white;
+          border: 1px solid #e3e7ed;
+          border-radius: 14px;
+          padding: 40px;
+          text-align: center;
+          color: #697386;
+        }
+
+        .errorBox {
+          background: #fff1f1;
+          border: 1px solid #f0caca;
+          color: #b42318;
+          padding: 15px 18px;
+          border-radius: 10px;
+          margin-bottom: 25px;
         }
 
         .kpiGrid {
           display: grid;
           grid-template-columns: repeat(4, 1fr);
           gap: 16px;
-        }
-
-        .kpiCard,
-        .overviewCard,
-        .chartCard {
-          background: white;
-          border: 1px solid #e6e9ee;
-          border-radius: 14px;
-          box-shadow: 0 3px 12px rgba(20, 30, 50, 0.04);
+          margin-bottom: 24px;
         }
 
         .kpiCard {
-          padding: 20px;
-        }
-
-        .kpiTop {
-          height: 25px;
-        }
-
-        .icon {
-          font-size: 17px;
-          font-weight: 700;
+          background: white;
+          border: 1px solid #e3e7ed;
+          border-radius: 14px;
+          padding: 22px;
+          min-height: 120px;
         }
 
         .kpiLabel {
-          margin-top: 13px;
-          font-size: 13px;
-          color: #6d7788;
+          font-size: 12px;
+          color: #697386;
+          font-weight: 700;
+          margin-bottom: 13px;
         }
 
         .kpiValue {
-          margin-top: 7px;
-          font-size: 25px;
+          font-size: 24px;
           font-weight: 800;
+          letter-spacing: -0.5px;
         }
 
-        .overviewSection {
+        .overviewGrid {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
-          gap: 18px;
-          margin-top: 30px;
+          gap: 16px;
+          margin-bottom: 28px;
         }
 
         .overviewCard {
-          padding: 24px;
+          background: white;
+          border: 1px solid #e3e7ed;
+          border-radius: 14px;
+          padding: 23px;
         }
 
         .overviewLabel {
           font-size: 12px;
-          letter-spacing: 1px;
-          font-weight: 800;
-          color: #707a8b;
+          font-weight: 700;
+          color: #697386;
+          margin-bottom: 10px;
         }
 
         .overviewValue {
-          margin-top: 9px;
-          font-size: 27px;
+          font-size: 26px;
           font-weight: 800;
+          margin-bottom: 5px;
         }
 
         .overviewText {
-          margin-top: 7px;
-          font-size: 13px;
-          color: #858e9d;
+          font-size: 12px;
+          color: #8992a2;
         }
 
         .trendSection {
-          margin-top: 32px;
+          margin-top: 5px;
+        }
+
+        .sectionTitle {
+          font-size: 20px;
+          font-weight: 800;
+          margin-bottom: 5px;
+        }
+
+        .sectionSubtitle {
+          color: #7d8796;
+          font-size: 12px;
+          margin-bottom: 15px;
         }
 
         .chartCard {
-          padding: 24px;
-          overflow-x: auto;
+          background: white;
+          border: 1px solid #e3e7ed;
+          border-radius: 14px;
+          padding: 22px;
+          overflow: hidden;
         }
 
         .chartLegend {
           display: flex;
-          gap: 22px;
+          gap: 24px;
           font-size: 12px;
           color: #697386;
           margin-bottom: 20px;
         }
 
-        .chartArea {
+        .salesLegend,
+        .inventoryLegend {
+          display: flex;
+          align-items: center;
+          gap: 7px;
+          font-weight: 700;
+        }
+
+        .legendDot {
+          width: 9px;
+          height: 9px;
+          border-radius: 50%;
+          display: inline-block;
+        }
+
+        .salesDot {
+          background: #172033;
+        }
+
+        .inventoryDot {
+          background: #9aa4b2;
+        }
+
+        .chartWrapper {
+          display: flex;
+          width: 100%;
+        }
+
+        .yAxis {
+          width: 52px;
+          height: 330px;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          padding: 4px 8px 28px 0;
+          text-align: right;
+          font-size: 10px;
+          color: #8992a2;
+          flex-shrink: 0;
+        }
+
+        .chartScroll {
+          flex: 1;
+          overflow-x: auto;
+          overflow-y: hidden;
+        }
+
+        .lineChartArea {
           min-width: 800px;
           height: 330px;
           display: flex;
           align-items: stretch;
           gap: 7px;
           border-bottom: 1px solid #dfe3e8;
-          padding: 20px 8px 0;
+          padding: 10px 8px 0;
+          position: relative;
         }
 
-        .chartColumn {
+        .lineColumn {
           flex: 1;
-          min-width: 24px;
+          min-width: 28px;
           display: flex;
           flex-direction: column;
           justify-content: flex-end;
+          position: relative;
         }
 
-        .bars {
+        .lineArea {
           height: 280px;
-          display: flex;
-          align-items: flex-end;
-          justify-content: center;
-          gap: 3px;
+          position: relative;
+          border-left: 1px solid #f0f2f5;
+          z-index: 2;
         }
 
-        .bar {
-          width: 45%;
-          min-height: 3px;
-          border-radius: 4px 4px 0 0;
+        .gridLines {
+          position: absolute;
+          left: 0;
+          right: 0;
+          top: 10px;
+          height: 280px;
+          pointer-events: none;
+          z-index: 0;
         }
 
-        .salesBar {
+        .gridLines span {
+          display: block;
+          height: 35px;
+          border-top: 1px dashed #edf0f3;
+        }
+
+        .salesPoint,
+        .inventoryPoint {
+          position: absolute;
+          width: 10px;
+          height: 10px;
+          border-radius: 50%;
+          left: 50%;
+          transform: translateX(-50%);
+          z-index: 3;
+        }
+
+        .salesPoint {
           background: #172033;
+          box-shadow: 0 0 0 3px rgba(23, 32, 51, 0.08);
         }
 
-        .inventoryBar {
+        .inventoryPoint {
           background: #9aa4b2;
+          box-shadow: 0 0 0 3px rgba(154, 164, 178, 0.12);
         }
 
         .chartDate {
@@ -431,54 +553,55 @@ export default function Home() {
           white-space: nowrap;
         }
 
-        .loading,
-        .error {
-          background: white;
-          padding: 20px;
-          border-radius: 12px;
-          margin-bottom: 20px;
+        .noData {
+          padding: 50px;
+          text-align: center;
+          color: #8992a2;
         }
 
-        footer {
-          display: flex;
-          justify-content: space-between;
-          margin-top: 35px;
-          padding-top: 20px;
-          border-top: 1px solid #e2e6eb;
-          font-size: 12px;
-          color: #7b8492;
-        }
-
-        @media (max-width: 900px) {
+        @media (max-width: 1000px) {
           .dashboard {
-            padding: 24px;
+            padding: 25px;
           }
 
           .kpiGrid {
             grid-template-columns: repeat(2, 1fr);
           }
 
-          .overviewSection {
+          .overviewGrid {
             grid-template-columns: 1fr;
+          }
+        }
+
+        @media (max-width: 650px) {
+          .dashboard {
+            padding: 18px;
           }
 
           .header {
             align-items: flex-start;
-            gap: 20px;
-          }
-        }
-
-        @media (max-width: 600px) {
-          .kpiGrid {
-            grid-template-columns: 1fr;
-          }
-
-          .header {
             flex-direction: column;
           }
 
           .headerRight {
-            text-align: left;
+            width: 100%;
+            justify-content: space-between;
+          }
+
+          h1 {
+            font-size: 24px;
+          }
+
+          .kpiGrid {
+            grid-template-columns: 1fr;
+          }
+
+          .kpiValue {
+            font-size: 22px;
+          }
+
+          .chartCard {
+            padding: 16px;
           }
         }
       `}</style>
