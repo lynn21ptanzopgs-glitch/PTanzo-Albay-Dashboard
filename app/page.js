@@ -1,4 +1,3 @@
-```javascript
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
@@ -59,22 +58,22 @@ const icons = {
 function formatMoney(value) {
   if (typeof value !== "number") return "—";
 
-  return `₱${value.toLocaleString("en-PH", {
+  return "₱" + value.toLocaleString("en-PH", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
-  })}`;
+  });
 }
 
 function formatCompact(value) {
   if (value >= 1000000) {
-    return `₱${(value / 1000000).toFixed(1)}M`;
+    return "₱" + (value / 1000000).toFixed(1) + "M";
   }
 
   if (value >= 1000) {
-    return `₱${(value / 1000).toFixed(0)}K`;
+    return "₱" + (value / 1000).toFixed(0) + "K";
   }
 
-  return `₱${value.toFixed(0)}`;
+  return "₱" + value.toFixed(0);
 }
 
 export default function Dashboard() {
@@ -86,7 +85,7 @@ export default function Dashboard() {
     try {
       setLoading(true);
 
-      const response = await fetch(`${API_URL}?t=${Date.now()}`, {
+      const response = await fetch(API_URL + "?t=" + Date.now(), {
         cache: "no-store",
       });
 
@@ -189,11 +188,11 @@ export default function Dashboard() {
       ((value || 0) / maxValue) * chartHeight;
 
     const salesPoints = dailyData
-      .map((item, index) => `${getX(index)},${getY(item.sales)}`)
+      .map((item, index) => getX(index) + "," + getY(item.sales))
       .join(" ");
 
     const inventoryPoints = dailyData
-      .map((item, index) => `${getX(index)},${getY(item.inventory)}`)
+      .map((item, index) => getX(index) + "," + getY(item.inventory))
       .join(" ");
 
     return {
@@ -243,7 +242,7 @@ export default function Dashboard() {
         {cards.map((card) => (
           <div
             key={card.label}
-            className={`kpiCard ${card.className}`}
+            className={"kpiCard " + card.className}
           >
             <div className="cardGlow" />
 
@@ -298,7 +297,12 @@ export default function Dashboard() {
               width={chart.width}
               height={chart.height}
               className="chart"
-              viewBox={`0 0 ${chart.width} ${chart.height}`}
+              viewBox={
+                "0 0 " +
+                chart.width +
+                " " +
+                chart.height
+              }
             >
               {[0, 1, 2, 3, 4, 5].map((level) => {
                 const value =
@@ -344,12 +348,17 @@ export default function Dashboard() {
                 const salesY = chart.getY(item.sales);
                 const inventoryY = chart.getY(item.inventory);
 
-                const date = new Date(`${item.date}T00:00:00`);
+                const date = new Date(
+                  item.date + "T00:00:00"
+                );
 
-                const label = date.toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "numeric",
-                });
+                const label = date.toLocaleDateString(
+                  "en-US",
+                  {
+                    month: "short",
+                    day: "numeric",
+                  }
+                );
 
                 return (
                   <g key={item.date}>
@@ -360,7 +369,8 @@ export default function Dashboard() {
                       className="salesPoint"
                     >
                       <title>
-                        {label} — Sales: {formatMoney(item.sales)}
+                        {label} — Sales:{" "}
+                        {formatMoney(item.sales)}
                       </title>
                     </circle>
 
@@ -848,7 +858,6 @@ export default function Dashboard() {
           stroke: #2563eb;
           stroke-width: 3;
           cursor: pointer;
-          transition: r 0.15s ease;
         }
 
         .inventoryPoint {
@@ -856,7 +865,6 @@ export default function Dashboard() {
           stroke: #059669;
           stroke-width: 3;
           cursor: pointer;
-          transition: r 0.15s ease;
         }
 
         .salesPoint:hover,
@@ -928,4 +936,3 @@ export default function Dashboard() {
     </main>
   );
 }
-```
