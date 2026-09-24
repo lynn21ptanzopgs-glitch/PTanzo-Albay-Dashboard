@@ -1,4 +1,3 @@
-```javascript
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
@@ -7,12 +6,17 @@ const API_URL =
   "https://script.google.com/macros/s/AKfycbzDG5qtgL4Pzt__QWAByxmrow82P4o88MAUgPsHkc8lemp6gcy7Tel7IzKO_-76PY8U0w/exec";
 
 function formatMoney(value) {
-  if (typeof value !== "number" || isNaN(value)) return "—";
+  if (typeof value !== "number" || isNaN(value)) {
+    return "—";
+  }
 
-  return "₱" + value.toLocaleString("en-PH", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
+  return (
+    "₱" +
+    value.toLocaleString("en-PH", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })
+  );
 }
 
 function formatCompact(value) {
@@ -31,7 +35,11 @@ function Icon({ type }) {
   if (type === "sales") {
     return (
       <svg viewBox="0 0 24 24" fill="none">
-        <path d="M4 19V5M4 19H20" stroke="currentColor" strokeWidth="2" />
+        <path
+          d="M4 19V5M4 19H20"
+          stroke="currentColor"
+          strokeWidth="2"
+        />
         <path
           d="M7 15L11 11L14 14L20 7"
           stroke="currentColor"
@@ -46,7 +54,13 @@ function Icon({ type }) {
   if (type === "receivable") {
     return (
       <svg viewBox="0 0 24 24" fill="none">
-        <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2" />
+        <circle
+          cx="12"
+          cy="12"
+          r="9"
+          stroke="currentColor"
+          strokeWidth="2"
+        />
         <path
           d="M12 7V17M15 9.5C15 8.4 13.9 7.5 12.5 7.5H11.7C10.2 7.5 9 8.5 9 9.7C9 10.9 10 11.6 11.2 11.9L13 12.4C14.2 12.7 15 13.4 15 14.5C15 15.7 13.8 16.5 12.3 16.5H11.5C10.1 16.5 9 15.6 9 14.5"
           stroke="currentColor"
@@ -119,9 +133,30 @@ function Icon({ type }) {
         strokeWidth="2"
         strokeLinecap="round"
       />
-      <rect x="7" y="12" width="2.8" height="5" rx="1" fill="currentColor" />
-      <rect x="11" y="9" width="2.8" height="8" rx="1" fill="currentColor" />
-      <rect x="15" y="6" width="2.8" height="11" rx="1" fill="currentColor" />
+      <rect
+        x="7"
+        y="12"
+        width="2.8"
+        height="5"
+        rx="1"
+        fill="currentColor"
+      />
+      <rect
+        x="11"
+        y="9"
+        width="2.8"
+        height="8"
+        rx="1"
+        fill="currentColor"
+      />
+      <rect
+        x="15"
+        y="6"
+        width="2.8"
+        height="11"
+        rx="1"
+        fill="currentColor"
+      />
     </svg>
   );
 }
@@ -157,6 +192,7 @@ function BarChart({ data, valueKey, labelKey }) {
 
           if (labelKey === "date" && label) {
             const parts = String(label).split("-");
+
             if (parts.length === 3) {
               label = parts[2];
             }
@@ -171,7 +207,9 @@ function BarChart({ data, valueKey, labelKey }) {
               <div className="bar-track">
                 <div
                   className="bar-fill"
-                  style={{ height: height + "%" }}
+                  style={{
+                    height: height + "%",
+                  }}
                   title={formatMoney(value)}
                 />
               </div>
@@ -303,6 +341,7 @@ export default function Dashboard() {
         <header className="header">
 
           <div className="brand">
+
             <div className="brand-icon">
               <Icon type="chart" />
             </div>
@@ -316,6 +355,7 @@ export default function Dashboard() {
                 Sales & Operations Dashboard
               </div>
             </div>
+
           </div>
 
           <div className="report-date">
@@ -432,7 +472,6 @@ export default function Dashboard() {
 
               </div>
 
-
               <div className="chart-card">
 
                 <div className="chart-header">
@@ -478,394 +517,6 @@ export default function Dashboard() {
         )}
 
       </div>
-
-
-      <style>{`
-
-        * {
-          box-sizing: border-box;
-        }
-
-        body {
-          margin: 0;
-          font-family: Arial, Helvetica, sans-serif;
-          background: #f4f7fb;
-          color: #172033;
-        }
-
-        .dashboard {
-          min-height: 100vh;
-          padding: 30px;
-          background: #f4f7fb;
-        }
-
-        .container {
-          max-width: 1500px;
-          margin: 0 auto;
-        }
-
-        .header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          gap: 25px;
-          margin-bottom: 28px;
-        }
-
-        .brand {
-          display: flex;
-          align-items: center;
-          gap: 15px;
-        }
-
-        .brand-icon {
-          width: 54px;
-          height: 54px;
-          border-radius: 16px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          background: #172033;
-          color: white;
-          box-shadow: 0 10px 25px rgba(23, 32, 51, 0.18);
-        }
-
-        .brand-icon svg {
-          width: 28px;
-          height: 28px;
-        }
-
-        .brand-title {
-          font-size: 27px;
-          font-weight: 800;
-          letter-spacing: -0.6px;
-        }
-
-        .brand-subtitle {
-          margin-top: 3px;
-          font-size: 13px;
-          color: #718096;
-          font-weight: 500;
-        }
-
-        .report-date {
-          text-align: right;
-          padding: 17px 24px;
-          border-radius: 18px;
-          background: white;
-          border: 1px solid #e4eaf2;
-          box-shadow: 0 8px 25px rgba(35, 50, 75, 0.07);
-        }
-
-        .report-date-label {
-          font-size: 13px;
-          font-weight: 800;
-          letter-spacing: 1.8px;
-          color: #7b8799;
-          text-transform: uppercase;
-          margin-bottom: 6px;
-        }
-
-        .report-date-value {
-          font-size: 25px;
-          line-height: 1.2;
-          font-weight: 850;
-          color: #172033;
-        }
-
-        .kpi-grid {
-          display: grid;
-          grid-template-columns: repeat(4, 1fr);
-          gap: 17px;
-          margin-bottom: 24px;
-        }
-
-        .kpi-card {
-          position: relative;
-          overflow: hidden;
-          min-height: 145px;
-          padding: 21px;
-          border-radius: 20px;
-          background: white;
-          border: 1px solid #e6ebf2;
-          box-shadow: 0 8px 24px rgba(35, 50, 75, 0.06);
-        }
-
-        .kpi-card::after {
-          content: "";
-          position: absolute;
-          width: 110px;
-          height: 110px;
-          right: -35px;
-          bottom: -45px;
-          border-radius: 50%;
-          background: rgba(37, 99, 235, 0.06);
-        }
-
-        .kpi-top {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-        }
-
-        .kpi-title {
-          font-size: 13px;
-          color: #718096;
-          font-weight: 700;
-        }
-
-        .kpi-icon {
-          width: 39px;
-          height: 39px;
-          border-radius: 12px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .kpi-icon svg {
-          width: 21px;
-          height: 21px;
-        }
-
-        .sales-card .kpi-icon {
-          background: #eaf2ff;
-          color: #2563eb;
-        }
-
-        .receivable-card .kpi-icon {
-          background: #fff5e6;
-          color: #d97706;
-        }
-
-        .purchase-card .kpi-icon {
-          background: #eeeafe;
-          color: #6d4aff;
-        }
-
-        .inventory-card .kpi-icon {
-          background: #e8f8f0;
-          color: #15905b;
-        }
-
-        .expense-card .kpi-icon {
-          background: #ffecef;
-          color: #dc3f68;
-        }
-
-        .kpi-value {
-          margin-top: 19px;
-          font-size: 26px;
-          font-weight: 850;
-          letter-spacing: -0.6px;
-          color: #172033;
-        }
-
-        .chart-grid {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 20px;
-        }
-
-        .chart-card {
-          background: white;
-          border: 1px solid #e6ebf2;
-          border-radius: 22px;
-          padding: 23px;
-          box-shadow: 0 8px 24px rgba(35, 50, 75, 0.06);
-          min-width: 0;
-        }
-
-        .chart-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 20px;
-        }
-
-        .chart-title-wrap {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-        }
-
-        .chart-icon {
-          width: 40px;
-          height: 40px;
-          border-radius: 12px;
-          background: #eef4ff;
-          color: #2563eb;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .chart-icon svg {
-          width: 22px;
-          height: 22px;
-        }
-
-        .chart-title {
-          font-size: 17px;
-          font-weight: 800;
-        }
-
-        .chart-subtitle {
-          margin-top: 2px;
-          font-size: 12px;
-          color: #8994a5;
-        }
-
-        .chart-area {
-          height: 360px;
-          overflow-x: auto;
-          overflow-y: hidden;
-          padding-top: 8px;
-        }
-
-        .bar-chart {
-          height: 100%;
-          min-width: 680px;
-        }
-
-        .chart-bars {
-          height: 100%;
-          display: flex;
-          align-items: stretch;
-          gap: 10px;
-          padding: 20px 8px 0;
-          border-bottom: 1px solid #e4e9f0;
-        }
-
-        .bar-column {
-          flex: 1;
-          min-width: 35px;
-          height: 100%;
-          display: flex;
-          flex-direction: column;
-          justify-content: flex-end;
-          align-items: center;
-        }
-
-        .bar-value {
-          height: 30px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 10px;
-          color: #657187;
-          white-space: nowrap;
-          font-weight: 700;
-        }
-
-        .bar-track {
-          width: 100%;
-          max-width: 44px;
-          height: calc(100% - 62px);
-          display: flex;
-          align-items: flex-end;
-          border-radius: 8px 8px 0 0;
-          background: #f1f4f8;
-          overflow: hidden;
-        }
-
-        .bar-fill {
-          width: 100%;
-          border-radius: 8px 8px 0 0;
-          background: #2563eb;
-          transition: height 0.4s ease;
-        }
-
-        .bar-label {
-          width: 100%;
-          height: 32px;
-          margin-top: 7px;
-          text-align: center;
-          font-size: 10px;
-          font-weight: 700;
-          color: #68758a;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-
-        .empty-chart {
-          height: 100%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: #8994a5;
-          font-size: 14px;
-        }
-
-        .status {
-          padding: 25px;
-          background: white;
-          border-radius: 18px;
-          text-align: center;
-          border: 1px solid #e6ebf2;
-        }
-
-        .error {
-          color: #c53030;
-        }
-
-        .refresh-button {
-          margin-top: 14px;
-          border: 0;
-          padding: 10px 16px;
-          border-radius: 10px;
-          background: #172033;
-          color: white;
-          cursor: pointer;
-          font-weight: 700;
-        }
-
-        @media (max-width: 1100px) {
-
-          .kpi-grid {
-            grid-template-columns: repeat(2, 1fr);
-          }
-
-          .chart-grid {
-            grid-template-columns: 1fr;
-          }
-
-        }
-
-        @media (max-width: 700px) {
-
-          .dashboard {
-            padding: 16px;
-          }
-
-          .header {
-            align-items: flex-start;
-            flex-direction: column;
-          }
-
-          .report-date {
-            width: 100%;
-            text-align: left;
-          }
-
-          .report-date-value {
-            font-size: 21px;
-          }
-
-          .kpi-grid {
-            grid-template-columns: 1fr;
-          }
-
-          .kpi-value {
-            font-size: 24px;
-          }
-
-        }
-
-      `}</style>
-
     </main>
   );
 }
-```
