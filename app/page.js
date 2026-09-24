@@ -357,11 +357,13 @@ export default function Dashboard() {
         </section>
 
 
-        {/* YTD SALES */}
+                {/* YTD + DSS / KAS PERFORMANCE */}
 
-        <section className="chart-grid">
+        <section className="performance-layout">
 
-          <div className="chart-card">
+          {/* YTD SALES — 2x width */}
+
+          <div className="chart-card ytd-card">
 
             <div className="chart-header">
 
@@ -391,17 +393,16 @@ export default function Dashboard() {
 
           </div>
 
-        </section>
 
-
-        {/* DSS / KAS PERFORMANCE */}
-
-        <section className="chart-grid">
+          {/* DSS */}
 
           <TeamPerformanceCard
             name="DSS"
             data={teamPerformance.DSS}
           />
+
+
+          {/* KAS */}
 
           <TeamPerformanceCard
             name="KAS"
@@ -409,8 +410,3 @@ export default function Dashboard() {
           />
 
         </section>
-
-      </div>
-    </main>
-  );
-}
