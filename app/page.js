@@ -125,7 +125,7 @@ const performance =
         <div className="team-progress">
           <div className="team-progress-label">
             <span>Performance</span>
-            <strong>{performance}%</strong>
+            <strong>{performance.toFixed(2)}%</strong>
           </div>
 
           <div className="team-progress-track">
