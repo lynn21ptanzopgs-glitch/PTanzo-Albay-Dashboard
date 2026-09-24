@@ -1,9 +1,61 @@
+```jsx
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
 
 const API_URL =
   "https://script.google.com/macros/s/AKfycbzDG5qtgL4Pzt__QWAByxmrow82P4o88MAUgPsHkc8lemp6gcy7Tel7IzKO_-76PY8U0w/exec";
+
+const icons = {
+  sales: (
+    <svg viewBox="0 0 24 24" className="icon">
+      <path d="M4 19V5" />
+      <path d="M4 19H20" />
+      <path d="M7 15L11 11L14 13L20 7" />
+    </svg>
+  ),
+
+  receivable: (
+    <svg viewBox="0 0 24 24" className="icon">
+      <circle cx="12" cy="12" r="8.5" />
+      <path d="M12 7V17" />
+      <path d="M15 9.5C14.4 8.8 13.4 8.5 12 8.5C10.3 8.5 9.2 9.3 9.2 10.5C9.2 11.7 10.2 12.2 12.1 12.6C14 13 14.8 13.5 14.8 14.7C14.8 16 13.7 16.8 12 16.8C10.6 16.8 9.5 16.3 8.8 15.5" />
+    </svg>
+  ),
+
+  purchase: (
+    <svg viewBox="0 0 24 24" className="icon">
+      <path d="M4 5H6L8 16H18L20 8H7" />
+      <circle cx="9" cy="19" r="1.5" />
+      <circle cx="17" cy="19" r="1.5" />
+    </svg>
+  ),
+
+  inventory: (
+    <svg viewBox="0 0 24 24" className="icon">
+      <path d="M4 8L12 4L20 8L12 12L4 8Z" />
+      <path d="M4 8V16L12 20L20 16V8" />
+      <path d="M12 12V20" />
+    </svg>
+  ),
+
+  expense: (
+    <svg viewBox="0 0 24 24" className="icon">
+      <rect x="4" y="5" width="16" height="14" rx="2" />
+      <path d="M8 9H16" />
+      <path d="M8 13H13" />
+      <path d="M8 16H11" />
+    </svg>
+  ),
+
+  chart: (
+    <svg viewBox="0 0 24 24" className="sectionIcon">
+      <path d="M4 19V5" />
+      <path d="M4 19H20" />
+      <path d="M7 15L10.5 11.5L13.5 13.5L19 7" />
+    </svg>
+  ),
+};
 
 export default function Home() {
   const [data, setData] = useState(null);
@@ -52,36 +104,43 @@ export default function Home() {
       label: "Today's Sales",
       value: data?.["Today's Sales"],
       className: "sales",
+      icon: icons.sales,
     },
     {
       label: "MTD Sales",
       value: data?.["MTD Sales"],
       className: "sales",
+      icon: icons.sales,
     },
     {
       label: "YTD Sales",
       value: data?.["YTD Sales"],
       className: "sales",
+      icon: icons.sales,
     },
     {
       label: "Accounts Receivable",
       value: data?.["Pending / Unpaid"],
       className: "receivable",
+      icon: icons.receivable,
     },
     {
       label: "Purchases MTD",
       value: data?.["Purchases MTD"],
       className: "purchase",
+      icon: icons.purchase,
     },
     {
       label: "Goods Inventory",
       value: data?.["Goods Inventory"],
       className: "inventory",
+      icon: icons.inventory,
     },
     {
       label: "Expenses MTD",
       value: data?.["Expenses MTD"],
       className: "expense",
+      icon: icons.expense,
     },
   ];
 
@@ -96,11 +155,11 @@ export default function Home() {
   const chart = useMemo(() => {
     if (!dailyData.length) return null;
 
-    const width = Math.max(900, dailyData.length * 58);
-    const height = 360;
+    const width = Math.max(950, dailyData.length * 58);
+    const height = 370;
 
-    const paddingLeft = 20;
-    const paddingRight = 20;
+    const paddingLeft = 65;
+    const paddingRight = 25;
     const paddingTop = 25;
     const paddingBottom = 55;
 
@@ -109,9 +168,11 @@ export default function Home() {
 
     const maxValue =
       Math.ceil(
-        Math.max(...dailyData.map((d) =>
-          Math.max(d.sales, d.inventory)
-        )) / 100000
+        Math.max(
+          ...dailyData.map((d) =>
+            Math.max(d.sales, d.inventory)
+          )
+        ) / 100000
       ) * 100000;
 
     const x = (index) => {
@@ -203,27 +264,27 @@ export default function Home() {
 
       {data && (
         <>
-          {/* KPI SECTION */}
+          {/* KPI CARDS */}
           <section className="kpiGrid">
             {cards.map((card) => (
               <div
                 className={`kpiCard ${card.className}`}
                 key={card.label}
               >
+                <div className="cardGlow"></div>
+
                 <div className="cardTop">
                   <div className="kpiLabel">
                     {card.label}
                   </div>
 
-                  <div className="cardIndicator"></div>
+                  <div className="iconBox">
+                    {card.icon}
+                  </div>
                 </div>
 
                 <div className="kpiValue">
                   {formatMoney(card.value)}
-                </div>
-
-                <div className="cardFooter">
-                  Current figure
                 </div>
               </div>
             ))}
@@ -232,13 +293,19 @@ export default function Home() {
           {/* CHART */}
           <section className="trendSection">
             <div className="sectionHeader">
-              <div>
-                <div className="sectionTitle">
-                  Daily Sales & Goods Inventory
+              <div className="sectionHeading">
+                <div className="sectionIconBox">
+                  {icons.chart}
                 </div>
 
-                <div className="sectionSubtitle">
-                  Historical daily movement from Daily Networth
+                <div>
+                  <div className="sectionTitle">
+                    Daily Sales & Goods Inventory
+                  </div>
+
+                  <div className="sectionSubtitle">
+                    Historical daily movement from Daily Networth
+                  </div>
                 </div>
               </div>
 
@@ -280,15 +347,15 @@ export default function Home() {
                         return (
                           <g key={index}>
                             <line
-                              x1="20"
-                              x2={chart.width - 20}
+                              x1="65"
+                              x2={chart.width - 25}
                               y1={yPosition}
                               y2={yPosition}
                               className="gridLine"
                             />
 
                             <text
-                              x="4"
+                              x="5"
                               y={yPosition + 4}
                               className="axisText"
                             >
@@ -387,9 +454,9 @@ export default function Home() {
           min-height: 100vh;
           background:
             radial-gradient(
-              circle at top right,
-              #eef3f8 0,
-              #f5f7fa 38%,
+              circle at 90% 0%,
+              #e9f0f7 0,
+              #f5f7fa 34%,
               #f5f7fa 100%
             );
           color: #172033;
@@ -414,7 +481,7 @@ export default function Home() {
           font-size: 12px;
           font-weight: 900;
           letter-spacing: 2.5px;
-          color: #536174;
+          color: #526174;
           margin-bottom: 8px;
         }
 
@@ -451,7 +518,7 @@ export default function Home() {
           font-weight: 750;
           cursor: pointer;
           color: #172033;
-          box-shadow: 0 2px 6px rgba(23, 32, 51, 0.04);
+          box-shadow: 0 2px 7px rgba(23, 32, 51, 0.05);
           transition:
             transform 0.15s ease,
             box-shadow 0.15s ease,
@@ -461,7 +528,7 @@ export default function Home() {
         .refreshButton:hover {
           background: #f8fafc;
           transform: translateY(-1px);
-          box-shadow: 0 4px 12px rgba(23, 32, 51, 0.08);
+          box-shadow: 0 5px 14px rgba(23, 32, 51, 0.09);
         }
 
         /* KPI */
@@ -470,26 +537,30 @@ export default function Home() {
           display: grid;
           grid-template-columns: repeat(4, 1fr);
           gap: 16px;
-          margin-bottom: 32px;
+          margin-bottom: 34px;
         }
 
         .kpiCard {
           position: relative;
           overflow: hidden;
-          background: rgba(255, 255, 255, 0.94);
-          border: 1px solid #e2e7ee;
-          border-radius: 15px;
-          padding: 21px 22px 18px;
-          min-height: 137px;
-          box-shadow: 0 4px 16px rgba(23, 32, 51, 0.035);
+          background: rgba(255, 255, 255, 0.96);
+          border: 1px solid #e1e6ed;
+          border-radius: 16px;
+          padding: 21px 22px;
+          min-height: 132px;
+          box-shadow:
+            0 5px 18px rgba(23, 32, 51, 0.045),
+            0 1px 2px rgba(23, 32, 51, 0.03);
           transition:
             transform 0.18s ease,
             box-shadow 0.18s ease;
         }
 
         .kpiCard:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 9px 24px rgba(23, 32, 51, 0.08);
+          transform: translateY(-3px);
+          box-shadow:
+            0 12px 28px rgba(23, 32, 51, 0.10),
+            0 2px 4px rgba(23, 32, 51, 0.03);
         }
 
         .kpiCard::before {
@@ -506,18 +577,49 @@ export default function Home() {
         }
 
         .kpiCard.receivable::before {
-          background: #9b6b2f;
+          background: #a36d2d;
         }
 
         .kpiCard.purchase::before {
-          background: #667085;
+          background: #65758a;
         }
 
         .kpiCard.inventory::before {
-          background: #4f7c68;
+          background: #4e8069;
         }
 
         .kpiCard.expense::before {
+          background: #8b5963;
+        }
+
+        .cardGlow {
+          position: absolute;
+          width: 110px;
+          height: 110px;
+          right: -48px;
+          bottom: -58px;
+          border-radius: 50%;
+          opacity: 0.10;
+          filter: blur(1px);
+        }
+
+        .sales .cardGlow {
+          background: #172033;
+        }
+
+        .receivable .cardGlow {
+          background: #a36d2d;
+        }
+
+        .purchase .cardGlow {
+          background: #65758a;
+        }
+
+        .inventory .cardGlow {
+          background: #4e8069;
+        }
+
+        .expense .cardGlow {
           background: #8b5963;
         }
 
@@ -525,6 +627,8 @@ export default function Home() {
           display: flex;
           justify-content: space-between;
           align-items: center;
+          position: relative;
+          z-index: 2;
         }
 
         .kpiLabel {
@@ -535,44 +639,59 @@ export default function Home() {
           text-transform: uppercase;
         }
 
-        .cardIndicator {
-          width: 7px;
-          height: 7px;
-          border-radius: 50%;
-          background: #d5dbe3;
+        .iconBox {
+          width: 35px;
+          height: 35px;
+          border-radius: 10px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          position: relative;
+          z-index: 2;
         }
 
-        .sales .cardIndicator {
-          background: #172033;
+        .sales .iconBox {
+          background: #edf0f4;
+          color: #172033;
         }
 
-        .receivable .cardIndicator {
-          background: #9b6b2f;
+        .receivable .iconBox {
+          background: #f7efe4;
+          color: #a36d2d;
         }
 
-        .purchase .cardIndicator {
-          background: #667085;
+        .purchase .iconBox {
+          background: #edf0f4;
+          color: #65758a;
         }
 
-        .inventory .cardIndicator {
-          background: #4f7c68;
+        .inventory .iconBox {
+          background: #eaf3ee;
+          color: #4e8069;
         }
 
-        .expense .cardIndicator {
-          background: #8b5963;
+        .expense .iconBox {
+          background: #f4eaed;
+          color: #8b5963;
+        }
+
+        .icon {
+          width: 19px;
+          height: 19px;
+          fill: none;
+          stroke: currentColor;
+          stroke-width: 1.8;
+          stroke-linecap: round;
+          stroke-linejoin: round;
         }
 
         .kpiValue {
-          margin-top: 14px;
+          position: relative;
+          z-index: 2;
+          margin-top: 15px;
           font-size: 25px;
           font-weight: 850;
           letter-spacing: -0.6px;
-        }
-
-        .cardFooter {
-          margin-top: 8px;
-          font-size: 10px;
-          color: #9aa3b1;
         }
 
         /* CHART */
@@ -589,6 +708,34 @@ export default function Home() {
           margin-bottom: 14px;
         }
 
+        .sectionHeading {
+          display: flex;
+          align-items: center;
+          gap: 11px;
+        }
+
+        .sectionIconBox {
+          width: 38px;
+          height: 38px;
+          border-radius: 11px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: #172033;
+          color: white;
+          box-shadow: 0 5px 12px rgba(23, 32, 51, 0.16);
+        }
+
+        .sectionIcon {
+          width: 20px;
+          height: 20px;
+          fill: none;
+          stroke: currentColor;
+          stroke-width: 1.8;
+          stroke-linecap: round;
+          stroke-linejoin: round;
+        }
+
         .sectionTitle {
           font-size: 20px;
           font-weight: 850;
@@ -598,32 +745,35 @@ export default function Home() {
         .sectionSubtitle {
           color: #7d8796;
           font-size: 12px;
-          margin-top: 5px;
+          margin-top: 4px;
         }
 
         .chartPeriod {
           background: white;
           border: 1px solid #e1e6ed;
-          border-radius: 8px;
-          padding: 7px 11px;
+          border-radius: 9px;
+          padding: 8px 12px;
           color: #697386;
           font-size: 11px;
           font-weight: 700;
+          box-shadow: 0 2px 6px rgba(23, 32, 51, 0.035);
         }
 
         .chartCard {
-          background: rgba(255, 255, 255, 0.96);
-          border: 1px solid #e2e7ee;
-          border-radius: 15px;
-          padding: 22px 22px 16px;
-          box-shadow: 0 4px 18px rgba(23, 32, 51, 0.035);
+          background: rgba(255, 255, 255, 0.97);
+          border: 1px solid #e1e6ed;
+          border-radius: 16px;
+          padding: 22px 22px 15px;
+          box-shadow:
+            0 5px 18px rgba(23, 32, 51, 0.04),
+            0 1px 2px rgba(23, 32, 51, 0.03);
         }
 
         .chartLegend {
           display: flex;
           align-items: center;
           gap: 25px;
-          margin-bottom: 6px;
+          margin-bottom: 4px;
           font-size: 12px;
           color: #697386;
           font-weight: 700;
@@ -636,10 +786,10 @@ export default function Home() {
         }
 
         .legendLine {
-          display: inline-block;
-          width: 22px;
+          width: 25px;
           height: 3px;
           border-radius: 5px;
+          display: inline-block;
         }
 
         .salesLine {
@@ -654,13 +804,12 @@ export default function Home() {
           width: 100%;
           overflow-x: auto;
           overflow-y: hidden;
-          padding-bottom: 3px;
+          padding-bottom: 2px;
         }
 
         .svgChart {
           display: block;
-          min-width: 900px;
-          overflow: visible;
+          min-width: 950px;
         }
 
         .gridLine {
@@ -676,14 +825,14 @@ export default function Home() {
 
         .salesChartLine {
           stroke: #172033;
-          stroke-width: 3;
+          stroke-width: 3.2;
           stroke-linecap: round;
           stroke-linejoin: round;
         }
 
         .inventoryChartLine {
           stroke: #718096;
-          stroke-width: 3;
+          stroke-width: 3.2;
           stroke-linecap: round;
           stroke-linejoin: round;
         }
@@ -714,8 +863,8 @@ export default function Home() {
 
         .chartNote {
           border-top: 1px solid #eef1f4;
-          margin-top: 5px;
-          padding-top: 12px;
+          margin-top: 2px;
+          padding-top: 11px;
           font-size: 10px;
           color: #9aa3b1;
         }
@@ -818,3 +967,4 @@ export default function Home() {
     </main>
   );
 }
+```
